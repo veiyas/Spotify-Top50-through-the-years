@@ -1,4 +1,15 @@
+import { csv, select } from 'd3';
 import './style.scss';
-import jagGillar from './testImports';
-console.log('Hello webpack jkljfklsdjsdkl!');
-jagGillar('fisk');
+
+const main = async () => {
+  select('#test').text('Newwww');
+
+  try {
+    const data = await csv('data/top50s.csv');
+    console.dir(data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+main();

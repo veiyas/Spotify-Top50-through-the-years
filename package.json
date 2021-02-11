@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack --mode development",
-    "start": "webpack serve --mode development --open",
+    "start": "webpack serve --mode development --open --hide-modules",
     "build": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/veiyas/Spotify-top-50-through-the-years#readme",
   "devDependencies": {
+    "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.2",
     "html-webpack-plugin": "^5.0.0",
     "sass": "^1.32.7",
@@ -29,5 +30,8 @@
     "webpack": "^5.21.2",
     "webpack-cli": "^4.5.0",
     "webpack-dev-server": "^3.11.2"
+  },
+  "dependencies": {
+    "d3": "^6.5.0"
   }
 }
