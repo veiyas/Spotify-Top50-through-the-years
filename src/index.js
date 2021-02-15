@@ -1,4 +1,5 @@
 import { csv, select } from 'd3';
+import ParallelCoord from './ParallelCoord';
 import './style.scss';
 
 const main = async () => {
@@ -6,10 +7,24 @@ const main = async () => {
 
   try {
     const data = await csv('data/top50s.csv');
-    console.dir(data);
+
+    const pc = new ParallelCoord(data, 'parallel-coord', propsToUsePC);
   } catch (err) {
     console.error(err);
   }
 };
 
 main();
+
+const propsToUsePC = new Set([
+  'bpm',
+  'nrgy',
+  'dnce',
+  'dB',
+  'live',
+  'val',
+  'dur',
+  'acous',
+  'spch',
+  'pop',
+]);
