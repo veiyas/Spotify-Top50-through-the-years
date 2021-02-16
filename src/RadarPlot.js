@@ -1,7 +1,7 @@
 import { scaleLinear, select, line, path } from 'd3';
 
 // Class to create a RadarPlot of the stats of a single song
-//Inspired by https://yangdanny97.github.io/blog/2019/03/01/D3-Spider-Chart
+// Inspired by https://yangdanny97.github.io/blog/2019/03/01/D3-Spider-Chart
 export default class RadarPlot {
   /** propsToUse is a Set */
   constructor(song, divId, propsToUse) {
@@ -67,7 +67,7 @@ export default class RadarPlot {
             let line_coordinate = this.angleToCoordinate(angle, 100);
             let label_coordinate = this.angleToCoordinate(angle, 110);
         
-            //draw axis line
+            // Draw axis line
             this.svg.append("line")
             .attr("x1", this.width)
             .attr("y1", this.height)
@@ -75,18 +75,18 @@ export default class RadarPlot {
             .attr("y2", line_coordinate.y)
             .attr("stroke","black");
         
-            //draw axis label
+            // Draw axis label
             this.svg.append("text")
             .attr("x", label_coordinate.x-15)
             .attr("y", label_coordinate.y)
             .text(ft_name);
         }
 
-        //Prepare the data and drawing configs
+        // Prepare the data and drawing configs
         const color = "darkorange";
-        var coordinates = this.getPathCoordinates(this.song);
+        const coordinates = this.getPathCoordinates(this.song);
 
-        //Draw the data with a <path>
+        // Draw the data with a <path>
         this.svg.append("path")
         .datum(coordinates)
         .attr("d", line()
@@ -98,23 +98,30 @@ export default class RadarPlot {
         .attr("stroke-opacity", 1)
         .attr("opacity", 0.5);
 
-        select('#test').text(this.song['title']);
+        // Display textual song info
+        select('#song-info')
+        .append("p")
+        .text(this.song['artist'] + " - " + this.song['title'] + " (" + this.song["year"] +")")
+        .style("text-align", "center")
+        .append("p")
+        .text("Duration: " +  (this.song['dur']/60).toFixed(0) + " min " + (this.song['dur'] % 60).toFixed(0) + " sec")
+        .append("p")
+        .text("Tempo: " + this.song['bpm'] + " bpm");
     }
 
-
-    getPathCoordinates(data_point){
-        let coordinates = [];
+    getPathCoordinates(data_point) {
+      const coordinates = [];
         for (var i = 0; i < this.features.length; i++){
-            let ft_name = this.features[i];
-            let angle = (Math.PI / 2) + (2 * Math.PI * i / this.features.length);
+            const ft_name = this.features[i];
+            const angle = (Math.PI / 2) + (2 * Math.PI * i / this.features.length);
             coordinates.push(this.angleToCoordinate(angle, data_point[ft_name]));
         }
         return coordinates;
     }
 
     angleToCoordinate(angle, value) {
-        let x = Math.cos(angle) * this.radialScale(value);
-        let y = Math.sin(angle) * this.radialScale(value);
+      const x = Math.cos(angle) * this.radialScale(value);
+      const y = Math.sin(angle) * this.radialScale(value);
         return {"x": this.width + x, "y": this.height - y};
     }
 

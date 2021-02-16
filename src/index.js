@@ -5,7 +5,7 @@ import Timeline from './Timeline'
 import './style.scss';
 
 const main = async () => {
-  select('#test').text('Newwww');
+  select('#test').text('BIG VIZ');
 
   try {
     const data = await csv('data/top50s.csv');
