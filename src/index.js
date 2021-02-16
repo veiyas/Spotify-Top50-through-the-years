@@ -1,6 +1,7 @@
 import { csv, select } from 'd3';
 import ParallelCoord from './ParallelCoord';
 import RadarPlot from './RadarPlot';
+import Timeline from './Timeline'
 import './style.scss';
 
 const main = async () => {
@@ -11,6 +12,8 @@ const main = async () => {
 
     const pc = new ParallelCoord(data, 'parallel-coord', propsToUsePC);
     const rp = new RadarPlot(data[Math.floor(Math.random() * data.length)], 'radar-plot', propsToUseRP);
+    const tl = new Timeline(data, 'timeline', propsToUseTL);
+
   } catch (err) {
     console.error(err);
   }
@@ -32,6 +35,17 @@ const propsToUsePC = new Set([
 ]);
 
 const propsToUseRP = new Set([
+  'nrgy',
+  'dnce',
+  'live',
+  'val',
+  'acous',
+  'spch',
+  'pop',
+]);
+
+const propsToUseTL = new Set([
+  'bpm',
   'nrgy',
   'dnce',
   'live',

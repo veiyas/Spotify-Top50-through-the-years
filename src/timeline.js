@@ -7,10 +7,7 @@ export default class Timeline {
         this.div = document.getElementById(divId);
         this.propsToUse = propsToUse;
 
-        //const containerWidth = this.div.clientWidth;
         this.margin = { top: 20, right: 20, bottom: 150, left: 40 },
-        //this.width = containerWidth - this.margin.left - this.margin.right;
-        //this.height = 500 - this.margin.top - this.margin.bottom;
         this.height = 300;
         this.width = 1000;
 
