@@ -1,4 +1,4 @@
-import { extent, scaleLinear, scalePoint, select, axisLeft } from 'd3';
+import { extent, scaleLinear, scalePoint, select, axisLeft, line } from 'd3';
 
 export default class ParallelCoord {
   /** propsToUse is a Set */
@@ -30,6 +30,8 @@ export default class ParallelCoord {
   }
 
   draw() {
+    // Inspired by https://www.d3-graph-gallery.com/graph/parallel_basic.html
+
     // The name of the dimensions(/axes) to use for plotting
     const dimensions = Object.keys(this.data[0]).filter((key) =>
       this.propsToUse.has(key)
@@ -47,11 +49,23 @@ export default class ParallelCoord {
       .padding(1)
       .domain(dimensions);
 
-    // TODO Draw lines
+    const pathGen = (d) =>
+      line()(dimensions.map((p) => [xScale(p), yScales[p](d[p])]));
+
+    // Draw lines
+    this.plot
+      .selectAll('.pc-line')
+      .data(this.data)
+      .enter()
+      .append('path')
+      .attr('d', pathGen)
+      .style('fill', 'none')
+      .style('stroke', 'orange')
+      .style('opacity', 0.3);
 
     // Draw axes
     this.plot
-      .selectAll('.dimension')
+      .selectAll('.pc-dimension')
       .data(dimensions)
       .enter()
       .append('g')
