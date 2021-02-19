@@ -1,4 +1,4 @@
-import { select, scaleTime, scaleLinear, axisBottom, axisLeft, timeParse, max, min, extent, timeFormat, nest, rollup, sum, group } from 'd3';
+import { select, scaleTime, scaleLinear, axisBottom, axisLeft, timeParse, max, min, extent, timeFormat, nest, rollup, sum, group, line, curveCardinal } from 'd3';
 
 export default class Timeline {
 
@@ -37,18 +37,12 @@ export default class Timeline {
         this.propsToUse.has(key)
       );
 
-        //Sum each column and group by year
+
+      //Sum each column by year
       const byYear = rollup(this.data,
-        v => Object.fromEntries(attributes.map(col => [col, sum(v, d=> +d[col])])),
+        v => Object.fromEntries(attributes.map(col => [col, sum(v, d => +d[col])])),
         d => d.year);
 
-    // const byYear = group(this.data, d => d.year)
-    // .rollup(function(d) { 
-    //  return sum(d, function(g) {return g.bpm,g.nrgy,g.dnce,g.live,g.val,g.acous,g.spch,g.pop; });
-    // }).entries(this.data);
-
-      console.log(typeof(byYear));
-      console.log(byYear);
 
       const xScale = scaleTime()
         .range([0,this.width])
@@ -68,14 +62,32 @@ export default class Timeline {
         .attr('x', this.width/2)
         .attr('y', 50)
         .text('year')
-        .style('fill', 'black'); // Maybe use a class instead
-    
+        .style('fill', 'black'); 
+
         //Draw y-axis
       this.timeline.append("g")
         .attr("class", "axis axis--y")
         .call(axisLeft(yScale));
 
-        console.log(byYear.values())        
+
+      // let values = Array.from(byYear).map(([key,value]) => value);
+      // let keys = Array.from( byYear.keys());
+      // console.log(keys);
+      // console.log(values);
+
+      // this.timeline
+      //  .selectAll('.line')
+      //  .append('g')
+      //  .attr('class', 'line')
+      //  .data(byYear)
+      //  .enter()
+      //  .append('path')
+      //  .attr('d', function (d) {
+      //    return line()
+      //      .x((d) => xScale(Array.from(d.keys())))
+      //      .y((d) => yScale(Array.from(d).map(([key,value]) => value)))
+      //  });
+
     }
 
 }
