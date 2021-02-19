@@ -10,23 +10,26 @@ export default class RadarPlot {
     this.propsToUse = propsToUse;
 
     // Calculate width, height, etc.
-    this.margin = { top: 40, right: 10, bottom: 10, left: 30 };
-    this.width = 300;
-    this.height = 300;
+    const containerWidth = this.div.clientWidth;
+    this.margin = { top: 10, right: 10, bottom: 10, left: 10 };
+    this.width = containerWidth - this.margin.left - this.margin.right;
+    this.height = containerWidth - this.margin.top - this.margin.bottom;
 
     // Put plot svg to this.div
     this.div.innerHTML = '';
     this.svg = select(this.div)
       .append('svg')
-      .attr('width', this.width * 2)
-      .attr('height', this.height * 2);
+      .attr('width', this.width)
+      .attr('height', this.height);
 
     // Create a group in svg for the actual plot space
     this.plot = this.svg
       .append('g')
       .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
 
-    this.radialScale = scaleLinear().domain([0, 100]).range([0, 250]);
+    this.radialScale = scaleLinear()
+      .domain([0, 100])
+      .range([0, this.width / 2 - 60]);
     this.features = [];
 
     this.draw();
@@ -44,8 +47,8 @@ export default class RadarPlot {
     ticks.forEach((t) =>
       this.svg
         .append('circle')
-        .attr('cx', this.width)
-        .attr('cy', this.height)
+        .attr('cx', this.width / 2)
+        .attr('cy', this.height / 2)
         .attr('fill', 'none')
         .attr('stroke', 'gray')
         .attr('r', this.radialScale(t))
@@ -55,8 +58,8 @@ export default class RadarPlot {
     ticks.forEach((t) =>
       this.svg
         .append('text')
-        .attr('x', this.width + 2)
-        .attr('y', this.height - 2 - this.radialScale(t))
+        .attr('x', this.width / 2 + 2)
+        .attr('y', this.height / 2 - 2 - this.radialScale(t))
         .text(t.toString())
     );
 
@@ -70,8 +73,8 @@ export default class RadarPlot {
       // Draw axis line
       this.svg
         .append('line')
-        .attr('x1', this.width)
-        .attr('y1', this.height)
+        .attr('x1', this.width / 2)
+        .attr('y1', this.height / 2)
         .attr('x2', line_coordinate.x)
         .attr('y2', line_coordinate.y)
         .attr('stroke', 'black');
@@ -141,7 +144,7 @@ export default class RadarPlot {
   angleToCoordinate(angle, value) {
     const x = Math.cos(angle) * this.radialScale(value);
     const y = Math.sin(angle) * this.radialScale(value);
-    return { x: this.width + x, y: this.height - y };
+    return { x: this.width / 2 + x, y: this.height / 2 - y };
   }
 
   setData(newData) {
