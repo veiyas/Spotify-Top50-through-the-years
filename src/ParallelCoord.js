@@ -1,5 +1,11 @@
 import { extent, scaleLinear, scalePoint, select, axisLeft, line } from 'd3';
 
+/* Some links that might be useful
+     - https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.258.5174&rep=rep1&type=pdf
+       combinations...
+     - https://core.ac.uk/download/pdf/192069397.pdf -- Mostly 3d pc
+*/
+
 export default class ParallelCoord {
   /** propsToUse is a Set */
   constructor(data, divId, propsToUse) {
