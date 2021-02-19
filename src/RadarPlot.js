@@ -11,7 +11,7 @@ export default class RadarPlot {
 
     // Calculate width, height, etc.
     const containerWidth = this.div.clientWidth;
-    this.margin = { top: 10, right: 10, bottom: 10, left: 10 };
+    this.margin = { top: 0, right: 10, bottom: 10, left: 10 };
     this.width = containerWidth - this.margin.left - this.margin.right;
     this.height = containerWidth - this.margin.top - this.margin.bottom;
 
@@ -41,6 +41,21 @@ export default class RadarPlot {
       this.propsToUse.has(key)
     );
     this.features = songFeatures;
+
+    // Prepare the data
+    const coordinates = this.getPathCoordinates(this.song);
+
+    // Draw the data with a <path>
+    this.svg
+      .append('path')
+      .datum(coordinates)
+      .attr(
+        'd',
+        line()
+          .x((d) => d.x)
+          .y((d) => d.y)
+      )
+      .attr('class', 'shape');
 
     // Create circles and incremental ticks
     const ticks = [20, 40, 60, 80, 100];
@@ -77,42 +92,23 @@ export default class RadarPlot {
         .attr('y1', this.height / 2)
         .attr('x2', line_coordinate.x)
         .attr('y2', line_coordinate.y)
-        .attr('stroke', 'black');
+        .attr('stroke', 'white');
 
       // Draw axis label
       this.svg
         .append('text')
         .attr('x', label_coordinate.x - 15)
         .attr('y', label_coordinate.y)
-        .text(ft_name);
+        .text(ft_name)
+        .attr('class', 'axis-label');
     }
-
-    // Prepare the data and drawing configs
-    const color = 'darkorange';
-    const coordinates = this.getPathCoordinates(this.song);
-
-    // Draw the data with a <path>
-    this.svg
-      .append('path')
-      .datum(coordinates)
-      .attr(
-        'd',
-        line()
-          .x((d) => d.x)
-          .y((d) => d.y)
-      )
-      .attr('stroke-width', 3)
-      .attr('stroke', color)
-      .attr('fill', color)
-      .attr('stroke-opacity', 1)
-      .attr('opacity', 0.5);
 
     // Display textual song info
     select('#song-info')
       .append('p')
       .text(
         this.song['artist'] +
-          ' - ' +
+          ' — ' +
           this.song['title'] +
           ' (' +
           this.song['year'] +

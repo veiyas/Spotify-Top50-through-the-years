@@ -64,12 +64,9 @@ body {
 h1 {
   font-size: $h1-font-size;
   font-weight: 600;
+  text-align: center;
   padding-bottom: $page-padding-bottom-top;
 }
-
-// #radar-container {
-//   // width: 100%;
-// }
 
 #song-info {
   padding: 5px 5px 5px 5px;
@@ -108,10 +105,24 @@ h1 {
   // .dimension {
   //   stroke: $primary-color;
   // }
-  .axis-label {
-    // stroke: $primary-color;
+}
+
+#radar-plot {
+  text {
     fill: $primary-color;
-    font-family: $font;
-    font-size: 1rem;
+    stroke-width: 0;
   }
+
+  .shape {
+    fill: $accent;
+    // opacity: 0.3;
+    opacity: 1;
+  }
+}
+
+.axis-label {
+  // stroke: $primary-color;
+  fill: $primary-color;
+  font-family: $font;
+  font-size: 1rem;
 }

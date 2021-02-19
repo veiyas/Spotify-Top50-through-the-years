@@ -1,7 +1,7 @@
 import { csv, select } from 'd3';
 import ParallelCoord from './ParallelCoord';
 import RadarPlot from './RadarPlot';
-import Timeline from './Timeline';
+import Timeline from './timeline';
 import './style.scss';
 
 const main = async () => {
@@ -14,6 +14,8 @@ const main = async () => {
       'radar-plot',
       propsToUseRP
     );
+
+    // TODO Fix width and height in Timeline to fit in layout
     // const tl = new Timeline(data, 'timeline', propsToUseTL);
   } catch (err) {
     console.error(err);
