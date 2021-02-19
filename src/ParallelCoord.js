@@ -5,7 +5,6 @@ import { extent, scaleLinear, scalePoint, select, axisLeft, line } from 'd3';
        combinations...
      - https://core.ac.uk/download/pdf/192069397.pdf -- Mostly 3d pc
 */
-
 export default class ParallelCoord {
   /** propsToUse is a Set */
   constructor(data, divId, propsToUse) {
@@ -24,8 +23,8 @@ export default class ParallelCoord {
     this.div.innerHTML = '';
     this.svg = select(this.div)
       .append('svg')
-      .attr('width', this.width)
-      .attr('height', this.height);
+      .attr('width', this.width + this.margin.left + this.margin.right)
+      .attr('height', this.height + this.margin.top + this.margin.bottom);
 
     // Create a group in svg for the actual plot space
     this.plot = this.svg
