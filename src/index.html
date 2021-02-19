@@ -7,14 +7,20 @@
     <title>Blippediplupp</title>
   </head>
   <body>
-    <h1 id="test"></h1>
-    <div id="timeline"></div>
-    <div id="radar-container">
-      <div id="song-info"></div>
-      <div id="radar-plot"></div>
+    <h1>Spotify top 50 through the years</h1>
+    <div class="row">
+      <div class="column left">
+        <div id="timeline-outer" class="shadow-box">
+          <div id="timeline"></div>
+        </div>
+        <div id="parallel-coord-outer" class="shadow-box">
+          <div id="parallel-coord"></div>
+        </div>
+      </div>
+      <div id="radar-container" class="column right shadow-box">
+        <div id="song-info"></div>
+        <div id="radar-plot"></div>
+      </div>
     </div>
-    <div id="parallel-coord"></div>
-
-    <!-- <script src="./index.js"></script> -->
   </body>
 </html>

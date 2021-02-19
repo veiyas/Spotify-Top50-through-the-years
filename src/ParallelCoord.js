@@ -14,9 +14,10 @@ export default class ParallelCoord {
 
     // Calculate width, height, etc.
     const containerWidth = this.div.clientWidth;
-    this.margin = { top: 40, right: 10, bottom: 10, left: 30 };
+    const containerHeight = this.div.clientHeight;
+    this.margin = { top: 40, right: 10, bottom: 10, left: 20 };
     this.width = containerWidth - this.margin.left - this.margin.right;
-    this.height = 500 - this.margin.top - this.margin.bottom;
+    this.height = containerHeight - this.margin.top - this.margin.bottom;
     // TODO Something is a bit off with the margins somewhere -- fix it!
 
     // Put plot svg to this.div
@@ -51,7 +52,7 @@ export default class ParallelCoord {
 
     const xScale = scalePoint()
       .range([0, this.width])
-      .padding(1)
+      .padding(0.2)
       .domain(dimensions);
 
     const pathGen = (d) =>
@@ -59,18 +60,16 @@ export default class ParallelCoord {
 
     // Draw lines
     this.plot
-      .selectAll('.pc-line')
+      .selectAll('.line')
       .data(this.data)
       .enter()
       .append('path')
       .attr('d', pathGen)
-      .style('fill', 'none')
-      .style('stroke', 'orange')
-      .style('opacity', 0.3);
+      .attr('class', 'line');
 
     // Draw axes
     this.plot
-      .selectAll('.pc-dimension')
+      .selectAll('.dimension')
       .data(dimensions)
       .enter()
       .append('g')
@@ -83,7 +82,7 @@ export default class ParallelCoord {
       .style('text-anchor', 'middle')
       .attr('y', -9)
       .text((d) => d)
-      .style('fill', 'black'); // Maybe use a class instead
+      .attr('class', 'axis-label');
   }
 
   setData(newData) {
