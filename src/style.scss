@@ -1,7 +1,13 @@
+@use 'reset';
+
 @import url('https://fonts.googleapis.com/css?family=Karla:weight@400;700&display=swap');
 
 $font: 'Comic Sans MS', 'Karla', sans-serif;
 $primary-color: #3e6f9e;
+
+* {
+  box-sizing: border-box;
+}
 
 body {
   font-family: $font;
