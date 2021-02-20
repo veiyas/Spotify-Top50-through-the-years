@@ -1,12 +1,10 @@
 import { csv, select } from 'd3';
 import ParallelCoord from './ParallelCoord';
 import RadarPlot from './RadarPlot';
-import Timeline from './Timeline';
+import Timeline from './timeline';
 import './style.scss';
 
 const main = async () => {
-  select('#test').text('BIG VIZ');
-
   try {
     const data = await csv('data/top50s.csv');
 
@@ -16,7 +14,9 @@ const main = async () => {
       'radar-plot',
       propsToUseRP
     );
-    const tl = new Timeline(data, 'timeline', propsToUseTL);
+
+    // TODO Fix width and height in Timeline to fit in layout
+    // const tl = new Timeline(data, 'timeline', propsToUseTL);
   } catch (err) {
     console.error(err);
   }
@@ -28,7 +28,7 @@ const propsToUsePC = new Set([
   'bpm',
   'nrgy',
   'dnce',
-  'dB',
+  // 'dB',
   'live',
   'val',
   'dur',

@@ -1,32 +1,128 @@
-@import url('https://fonts.googleapis.com/css?family=Karla:weight@400;700&display=swap');
+@use 'reset';
 
-$font: 'Comic Sans MS', 'Karla', sans-serif;
-$primary-color: #3e6f9e;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
+
+// Spotify colors
+$spotify-green: #1db954;
+$spotify-white: #ffffff;
+$spotify-black: #191414;
+
+$background: $spotify-black;
+$lighter-background: #1f1b1b;
+$accent: $spotify-green;
+$primary-color: $spotify-white;
+$darker-primary-color: darken($primary-color, 10%);
+
+$font: 'Poppins', sans-serif;
+
+$page-padding-bottom-top: 3rem;
+$h1-font-size: 3rem;
+
+* {
+  box-sizing: border-box;
+}
 
 body {
   font-family: $font;
   color: $primary-color;
-  background-color: rgb(236, 236, 236);
+  background-color: $background;
+  padding: $page-padding-bottom-top 6rem;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.column {
+  height: calc(100vh - 3 * #{$page-padding-bottom-top} - #{$h1-font-size});
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex: 1;
+  // border: 1px solid red;
+
+  &.right {
+    // flex: 0 0 90%;
+    // background-color: blue;
+  }
+  &.left {
+    flex: 0 0 65%;
+    margin-right: 1.5rem;
+  }
+}
+
+.shadow-box {
+  background-color: $lighter-background;
+  border-radius: 0.3rem;
+  padding: 2rem;
+  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
 }
 
 h1 {
-  font-size: 3rem;
-  color: white;
+  font-size: $h1-font-size;
+  font-weight: 600;
   text-align: center;
-  text-shadow: -4px 4px #ef3550, -8px 8px #f48fb1, -12px 12px #7e57c2,
-    -16px 16px #2196f3, -20px 20px #26c6da, -24px 24px #43a047,
-    -28px 28px #eeff41, -32px 32px #f9a825, -36px 36px #ff5722;
-}
-
-#radar-container {
-  width: 40%;
+  padding-bottom: $page-padding-bottom-top;
 }
 
 #song-info {
   padding: 5px 5px 5px 5px;
-  background-color: lightblue;
   border-radius: 10px;
-  color: rgb(255, 240, 212);
-  text-shadow: 2px 2px rgb(189, 139, 139);
+  color: $primary-color;
   font-size: 30px;
+}
+
+#timeline-outer {
+  margin-bottom: 1.5rem;
+  height: 50%;
+}
+
+#timeline {
+  height: 100%;
+}
+
+#parallel-coord-outer {
+  height: 50%;
+}
+
+#parallel-coord {
+  height: 100%;
+
+  .line {
+    fill: none;
+    stroke: $accent;
+    opacity: 0.3;
+
+    &:hover {
+      stroke: red;
+      stroke-width: 3px;
+      opacity: 1;
+    }
+  }
+  // .dimension {
+  //   stroke: $primary-color;
+  // }
+}
+
+#radar-plot {
+  text {
+    fill: $primary-color;
+    stroke-width: 0;
+  }
+
+  .shape {
+    fill: $accent;
+    // opacity: 0.3;
+    opacity: 1;
+  }
+}
+
+.axis-label {
+  // stroke: $primary-color;
+  fill: $primary-color;
+  font-family: $font;
+  font-size: 1rem;
 }
