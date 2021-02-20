@@ -48,7 +48,7 @@ export default class Timeline {
             .attr("class", "timeline")
             .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
 
-        this.draw();        
+        this.draw();      
     }
 
 
@@ -70,6 +70,7 @@ export default class Timeline {
         this.propsToUse.has(key)
       );
 
+
       //Sum each column by year
       const byYear = rollup(this.data,
         v => Object.fromEntries(attributes.map(col => [col, sum(v, d => +d[col])])),
@@ -85,12 +86,17 @@ export default class Timeline {
 
       const graphLine = line()
         .x(function(d) { return xScale(d.date); })
-        .y(function(d) { return yScale(d.score); });
+        .y(function(d) { return yScale(d.score); }); 
 
+      //Give the lines ids
       let id = 0;
       const ids = function () {
           return "line-"+id++;
-      } 
+      }
+      //let id = ["bpm","nrgy","dnce","live","val","acous","spch","pop"];
+      // const ids = function () {
+      //     return "line-"+id++;
+      // }
 
 
         //Draw x-axis

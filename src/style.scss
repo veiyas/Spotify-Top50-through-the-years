@@ -126,3 +126,10 @@ h1 {
   font-family: $font;
   font-size: 1rem;
 }
+
+#timeline{
+  path{
+    fill: none;
+    stroke: #ed3700;
+  }
+}

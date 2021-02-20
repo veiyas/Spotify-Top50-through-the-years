@@ -16,7 +16,7 @@ const main = async () => {
     );
 
     // TODO Fix width and height in Timeline to fit in layout
-    // const tl = new Timeline(data, 'timeline', propsToUseTL);
+     const tl = new Timeline(data, 'timeline', propsToUseTL);
   } catch (err) {
     console.error(err);
   }
