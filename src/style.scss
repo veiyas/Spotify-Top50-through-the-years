@@ -127,9 +127,47 @@ h1 {
   font-size: 1rem;
 }
 
+//Color scheme taken from colorbrewer: https://colorbrewer2.org/#type=qualitative&scheme=Set1&n=8
 #timeline{
-  path{
-    fill: none;
-    stroke: #ed3700;
-  }
+
+  path.line-bpm{
+      &:hover {
+        stroke-width: 7px;
+      }
+    }
+    path.line-nrgy{
+      &:hover {
+        stroke-width: 7px;
+      }
+    }
+    path.line-dnce{
+      &:hover {
+        stroke-width: 7px;
+      }
+    }
+    path.line-live{
+      &:hover {
+        stroke-width: 7px;
+      }
+    }
+    path.line-val{
+      &:hover {
+        stroke-width: 7px;
+      }
+    }
+    path.line-acous{
+      &:hover {
+        stroke-width: 7px;
+      }
+    }
+    path.line-spch{
+      &:hover {
+        stroke-width: 7px;
+      }
+    }
+    path.line-pop{
+      &:hover {
+        stroke-width: 7px;
+      }
+    }
 }

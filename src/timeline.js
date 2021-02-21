@@ -1,4 +1,4 @@
-import { select, scaleTime, scaleLinear, axisBottom, axisLeft, timeParse, max, min, extent, timeFormat, nest, rollup, sum, group, line, curveCardinal } from 'd3';
+import { select, scaleTime, scaleLinear, axisBottom, axisLeft, timeParse, max, min, extent, timeFormat, nest, rollup, sum, group, line, scaleOrdinal, schemeCategory10 } from 'd3';
 
 export default class Timeline {
 
@@ -9,7 +9,7 @@ export default class Timeline {
 
         this.margin = { top: 20, right: 20, bottom: 150, left: 40 },
         this.height = 300;
-        this.width = 1000;
+        this.width = 900;
 
         var parseYear= timeParse("%Y");
 
@@ -41,7 +41,7 @@ export default class Timeline {
         this.div.innerHTML = '';
         this.svg = select(this.div)
           .append('svg')
-          .attr('width', this.width+100)
+          .attr('width', this.width+150)
           .attr('height', this.height+100);
         
         this.timeline = this.svg.append("g")
@@ -89,14 +89,15 @@ export default class Timeline {
         .y(function(d) { return yScale(d.score); }); 
 
       //Give the lines ids
-      let id = 0;
+      var id = ["bpm","nrgy","dnce","live","val","acous","spch","pop"];
+      var counter = 0;
       const ids = function () {
-          return "line-"+id++;
+          return "line-"+id[counter++];
       }
-      //let id = ["bpm","nrgy","dnce","live","val","acous","spch","pop"];
-      // const ids = function () {
-      //     return "line-"+id++;
-      // }
+
+      //give each line a color
+      var colors = scaleOrdinal().domain(id).range(schemeCategory10);
+      console.log(schemeCategory10)
 
 
         //Draw x-axis
@@ -116,7 +117,7 @@ export default class Timeline {
         .attr("class", "axis axis--y")
         .call(axisLeft(yScale));
 
-      
+      //Draw lines
       const lines = this.timeline.selectAll("lines")
         .data(sumData)
         .enter()
@@ -124,58 +125,44 @@ export default class Timeline {
 
       lines.append("path")
         .attr("class", ids)
-        .attr("d", function(d) {return graphLine(d.values); });
+        .attr("d", function(d) {return graphLine(d.values); })
+        .attr("fill", "none")
+        .attr("stroke", d => colors(d.id))
+        .attr("stroke-width", 3);
+
+      //Add line legend
+      var legend = this.timeline
+        .selectAll('g.legend')
+        .data(sumData)
+        .enter()
+        .append("g")
+        .attr("class", "legend");
+
+      legend.append("circle")
+        .attr("cx", 930)
+        .attr('cy', (d, i) => i * 30 + 45)
+        .attr("r", 6)
+        .style("fill", d => colors(d.id))
+
+        legend.append("text")
+        .attr("x", 940)
+        .attr("y", (d, i) => i * 30 + 50)
+        .text(d => d.id)
+        .style("fill", "white");
 
 
-      // let values = Array.from(byYear).map(([key,value]) => value);
-      // let keys = Array.from( byYear.keys());
-      //console.log(byYear)
-      // console.log(byYear)
-      //  var newData = Array.from(byYear);
-      //  console.log(newData);
-      // console.log("hej",Object.values(newData[0][1]))
 
-
-
+      //append circle to the lines. Not working
       // this.timeline
-      // .selectAll('.line')
-      // .append('g')
-      // .attr('class', 'line')
-      // .data(newData)
-      // .enter()
-      // .append('path')
-      // .attr('d', function (d) {
-      //   console.log("xScale", xScale((d)[0]));
-      //   console.log('yscale', Object.values(d[1]).map((p) => yScale(p)));
-      //   return line()
-      //    .x((d) => {
-      //      console.log('d: ', (d[0]));
-      //      return xScale((d)[0])}
-      //      )
-      //    .y((d) => yScale(6000))(Object.values(d));
-      //    //  .y((d) => Object.values(d[1]).map((p) => yScale(p)))(d);
-      // });
-      
-      // this.timeline
-      //  .selectAll('.line')
-      //  .append('g')
-      //  .attr('class', 'line')
-      //  .data(byYear)
-      //  .enter()
-      //  .append('path')
-      //  .attr('d', function (d) {
-      //    console.log("xScale", xScale((d)[0]));
-      //    console.log('yscale', Object.values(d[1]).map((p) => yScale(p)));
-      //    return line()
-      //     .x((d) => {
-      //       console.log('d: ', (typeof d[1]));
-      //       return xScale((d)[0])}
-      //       )
-      //     .y((d) => yScale(6000))(Object.values(d));
-      //     //  .y((d) => Object.values(d[1]).map((p) => yScale(p)))(d);
-      //  });
-
-      
-
+      //   .selectAll('circle')
+      //   .append('g')
+      //   .data(sumData)
+      //   .enter()
+      //   .append('circle')
+      //   .attr('r', 6)
+      //   .attr('cx', (d) => { console.log(d.date); return xScale(d.date);})
+      //   .attr('cy', (d) => { console.log(d.score); yScale(d.score);})
+      //   .style("fill", d => colors(d.id))
+    
     }
   }
