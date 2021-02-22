@@ -117,14 +117,14 @@ export default class RadarPlot {
       .style('text-align', 'center')
       .append('p')
       .text(
-        'Duration: ' +
+        '' +
           (this.song['dur'] / 60).toFixed(0) +
           ' min ' +
           (this.song['dur'] % 60).toFixed(0) +
           ' sec'
       )
       .append('p')
-      .text('Tempo: ' + this.song['bpm'] + ' bpm');
+      .text('' + this.song['bpm'] + ' bpm');
   }
 
   getPathCoordinates(data_point) {
