@@ -8,7 +8,11 @@ import './style.scss';
 const main = async () => {
   try {
     const data = await csv('data/top50s.csv');
+    
+    // Attach cluster as object property for all entries
+    DBSCAN(data);
 
+    // Create visual elements
     const tl = new Timeline(data, 'timeline', propsToUseTL); // TODO Fix width and height in Timeline to fit in layout
     const pc = new ParallelCoord(data, 'parallel-coord', propsToUsePC);
     var rp = new RadarPlot(
@@ -17,8 +21,6 @@ const main = async () => {
       propsToUseRP
     );
 
-    console.log(DBSCAN(data));
-    
   } catch (err) {
     console.error(err);
   }

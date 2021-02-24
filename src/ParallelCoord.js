@@ -55,8 +55,7 @@ export default class ParallelCoord {
       .padding(0.2)
       .domain(dimensions);
 
-    const pathGen = (d) =>
-      line()(dimensions.map((p) => [xScale(p), yScales[p](d[p])]));
+    const pathGen = (d) => line()(dimensions.map((p) => [xScale(p), yScales[p](d[p])]));
 
     // Draw lines
     this.plot
@@ -65,7 +64,8 @@ export default class ParallelCoord {
       .enter()
       .append('path')
       .attr('d', pathGen)
-      .attr('class', 'line');
+      .attr('class', 'line')
+      .style('stroke', function(d) { if (d['cluster'] == 0) { return 'red';} else { return 'lime';}});
 
     // Draw axes
     this.plot
