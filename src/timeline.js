@@ -97,7 +97,6 @@ export default class Timeline {
 
       //give each line a color
       var colors = scaleOrdinal().domain(id).range(schemeCategory10);
-      console.log(schemeCategory10)
 
 
         //Draw x-axis
