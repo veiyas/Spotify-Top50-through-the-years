@@ -111,7 +111,7 @@ export default class RadarPlot {
           ' — ' +
           this.song['title'] +
           ' (' +
-          this.song['year'] +
+          this.song['year'].getFullYear() +
           ')'
       )
       .style('text-align', 'center')

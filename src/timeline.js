@@ -1,7 +1,6 @@
 import { select, scaleTime, scaleLinear, axisBottom, axisLeft, timeParse, max, min, extent, timeFormat, nest, rollup, sum, group, line, scaleOrdinal, schemeCategory10 } from 'd3';
 
 export default class Timeline {
-
     constructor(data, divId, propsToUse){
         this.data = data;
         this.div = document.getElementById(divId);
@@ -98,7 +97,6 @@ export default class Timeline {
       //give each line a color
       var colors = scaleOrdinal().domain(id).range(schemeCategory10);
 
-
         //Draw x-axis
       this.timeline.append("g")
         .attr("class", "axis axis-x")
@@ -124,7 +122,7 @@ export default class Timeline {
 
       lines.append("path")
         .attr("class", ids)
-        .attr("d", function(d) {return graphLine(d.values); })
+        .attr("d", function(d) { return graphLine(d.values); })
         .attr("fill", "none")
         .attr("stroke", d => colors(d.id))
         .attr("stroke-width", 3);
