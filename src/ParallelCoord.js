@@ -46,11 +46,10 @@ export default class ParallelCoord {
       .append('g')
       .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
 
-    // Initialize axes
-    // TODO
-    ///////////////////
-    ////////////////////
-    ////////////////////////////////
+    this.tooltip = select('body')
+      .append('div')
+      .attr('class', 'tooltip')
+      .style('opacity', 0);
 
     // The name of the dimensions(/axes) to use for plotting
     this.dimensions = Object.keys(this.data[0]).filter((key) =>
@@ -76,7 +75,6 @@ export default class ParallelCoord {
     this.axes = new Map(
       this.dimensions.map((d) => [d, axisLeft(this.yScales[d]).ticks(2)])
     );
-    ////////////////////////////////////
 
     this.draw();
   }
@@ -130,14 +128,28 @@ export default class ParallelCoord {
 
     const lines = this.plot.selectAll('.line').data(this.data);
     lines.exit().remove();
-    lines
-      .enter()
-      .append('path')
-      .merge(lines)
+    const fullSelection = lines.enter().append('path').merge(lines);
+
+    fullSelection
       .transition()
       .attr('d', pathGen)
       .attr('class', 'line')
       .style('stroke', (d) => (d['cluster'] === 0 ? 'red' : 'lime'));
+
+    fullSelection
+      .on('mouseover', (event, d) => {
+        this.tooltip.transition().duration(40).style('opacity', 1);
+        this.tooltip
+          .html(d.title + '<br/>by ' + d.artist)
+          .style('left', event.pageX + 'px')
+          .style('top', event.pageY - 28 + 'px');
+
+        // So this only works like 30% of the time for some reason
+        // select(event.target).raise();
+      })
+      .on('mouseout', (event, d) => {
+        this.tooltip.transition().style('opacity', 0);
+      });
   }
 
   /** Data should have the same dimensions as the initial data */
