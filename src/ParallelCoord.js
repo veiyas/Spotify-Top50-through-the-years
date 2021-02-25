@@ -4,9 +4,10 @@ import { extent, scaleLinear, scalePoint, select, axisLeft, line } from 'd3';
      - https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.258.5174&rep=rep1&type=pdf
        combinations...
      - https://core.ac.uk/download/pdf/192069397.pdf -- Mostly 3d pc
+     - https://www.napier.ac.uk/~/media/worktribe/output-267438/using-curves-to-enhance-parallel-coordinate-visualisations.pdf
 */
 export default class ParallelCoord {
-  /** propsToUse is a Set */
+  /** `propsToUse` is a Set */
   constructor(data, divId, propsToUse) {
     this.data = data;
     this.div = document.getElementById(divId);
@@ -32,6 +33,9 @@ export default class ParallelCoord {
       .append('g')
       .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
 
+    // Initialize axes
+    // TODO
+
     this.draw();
   }
 
@@ -39,43 +43,46 @@ export default class ParallelCoord {
     // Inspired by https://www.d3-graph-gallery.com/graph/parallel_basic.html
 
     // The name of the dimensions(/axes) to use for plotting
-    const dimensions = Object.keys(this.data[0]).filter((key) =>
+    this.dimensions = Object.keys(this.data[0]).filter((key) =>
       this.propsToUse.has(key)
     );
 
-    const yScales = {};
-    for (const dim of dimensions) {
-      yScales[dim] = scaleLinear()
+    this.yScales = {};
+    for (const dim of this.dimensions) {
+      this.yScales[dim] = scaleLinear()
         .domain(extent(this.data, (d) => +d[dim]))
-        .range([this.height, 0]);
+        .range([this.height, 0])
+        .nice();
     }
 
-    const xScale = scalePoint()
+    this.xScale = scalePoint()
       .range([0, this.width])
       .padding(0.2)
-      .domain(dimensions);
+      .domain(this.dimensions);
 
-    const pathGen = (d) =>
-      line()(dimensions.map((p) => [xScale(p), yScales[p](d[p])]));
+    if (!this.axes) {
+      this.axes = new Map(
+        this.dimensions.map((d) => [d, axisLeft(this.yScales[d]).ticks(2)])
+      );
+    }
 
-    // Draw lines
-    this.plot
-      .selectAll('.line')
-      .data(this.data)
-      .enter()
-      .append('path')
-      .attr('d', pathGen)
-      .attr('class', 'line');
+    this.drawLines();
+    this.drawAxes();
+  }
 
-    // Draw axes
+  /** Must be called *after* scales and `this.axes` are initialized */
+  drawAxes() {
+    // TODO Fix updates for axes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
     this.plot
       .selectAll('.dimension')
-      .data(dimensions)
+      .data(this.dimensions)
       .enter()
       .append('g')
-      .attr('transform', (d) => `translate(${xScale(d)})`)
-      .each(function (d) {
-        select(this).call(axisLeft(yScales[d]));
+      .attr('transform', (d) => `translate(${this.xScale(d)})`)
+      .each((d, i, nodes) => {
+        // Reduce the number of ticks on the scale to reduce clutter
+        select(nodes[i]).transition().duration(2000).call(this.axes.get(d));
       })
       // Axis label
       .append('text')
@@ -85,8 +92,28 @@ export default class ParallelCoord {
       .attr('class', 'axis-label');
   }
 
+  /** Must be called *after* scales are initialized */
+  drawLines() {
+    const pathGen = (d) =>
+      line()(
+        this.dimensions.map((p) => [this.xScale(p), this.yScales[p](d[p])])
+      );
+
+    const lines = this.plot.selectAll('.line').data(this.data);
+    lines.exit().remove();
+    lines
+      .enter()
+      .append('path')
+      .merge(lines)
+      .transition()
+      .attr('d', pathGen)
+      .attr('class', 'line');
+  }
+
   setData(newData) {
     this.data = newData;
-    // TODO Do i need to force an update maybe
+    // // TODO While this way kinda works, its probably not "correct"
+    // this.plot.selectAll('*').remove();
+    this.draw();
   }
 }

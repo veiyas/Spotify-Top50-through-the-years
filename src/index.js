@@ -14,9 +14,15 @@ const main = async () => {
       'radar-plot',
       propsToUseRP
     );
-
     // TODO Fix width and height in Timeline to fit in layout
     // const tl = new Timeline(data, 'timeline', propsToUseTL);
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    pc.setData(data.filter((d) => d.year === '2017'));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    pc.setData(data.filter((d) => d.year === '2018'));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    pc.setData(data.filter((d) => d.year === '2019'));
   } catch (err) {
     console.error(err);
   }
