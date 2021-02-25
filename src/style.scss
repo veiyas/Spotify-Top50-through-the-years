@@ -2,6 +2,8 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
 
+// https://developer.spotify.com/documentation/general/design-and-branding/
+
 // Spotify colors
 $spotify-green: #1db954;
 $spotify-white: #ffffff;
@@ -93,7 +95,7 @@ h1 {
 
   .line {
     fill: none;
-    // stroke: $accent;
+    stroke: $accent;
     opacity: 0.3;
 
     &:hover {
@@ -128,46 +130,45 @@ h1 {
 }
 
 //Color scheme taken from colorbrewer: https://colorbrewer2.org/#type=qualitative&scheme=Set1&n=8
-#timeline{
-
-  path.line-bpm{
-      &:hover {
-        stroke-width: 7px;
-      }
+#timeline {
+  path.line-bpm {
+    &:hover {
+      stroke-width: 7px;
     }
-    path.line-nrgy{
-      &:hover {
-        stroke-width: 7px;
-      }
+  }
+  path.line-nrgy {
+    &:hover {
+      stroke-width: 7px;
     }
-    path.line-dnce{
-      &:hover {
-        stroke-width: 7px;
-      }
+  }
+  path.line-dnce {
+    &:hover {
+      stroke-width: 7px;
     }
-    path.line-live{
-      &:hover {
-        stroke-width: 7px;
-      }
+  }
+  path.line-live {
+    &:hover {
+      stroke-width: 7px;
     }
-    path.line-val{
-      &:hover {
-        stroke-width: 7px;
-      }
+  }
+  path.line-val {
+    &:hover {
+      stroke-width: 7px;
     }
-    path.line-acous{
-      &:hover {
-        stroke-width: 7px;
-      }
+  }
+  path.line-acous {
+    &:hover {
+      stroke-width: 7px;
     }
-    path.line-spch{
-      &:hover {
-        stroke-width: 7px;
-      }
+  }
+  path.line-spch {
+    &:hover {
+      stroke-width: 7px;
     }
-    path.line-pop{
-      &:hover {
-        stroke-width: 7px;
-      }
+  }
+  path.line-pop {
+    &:hover {
+      stroke-width: 7px;
     }
+  }
 }

@@ -4,9 +4,23 @@ import { extent, scaleLinear, scalePoint, select, axisLeft, line } from 'd3';
      - https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.258.5174&rep=rep1&type=pdf
        combinations...
      - https://core.ac.uk/download/pdf/192069397.pdf -- Mostly 3d pc
+     - https://www.napier.ac.uk/~/media/worktribe/output-267438/using-curves-to-enhance-parallel-coordinate-visualisations.pdf
 */
+
+/** Name of dimensions with values up to 100 */
+const HUNDRED_RANGE = new Set([
+  'nrgy',
+  'pop',
+  'spch',
+  'acous',
+  'val',
+  'live',
+  'dnce',
+]);
+
+// Inspired by https://www.d3-graph-gallery.com/graph/parallel_basic.html
 export default class ParallelCoord {
-  /** propsToUse is a Set */
+  /** `propsToUse` is a Set */
   constructor(data, divId, propsToUse) {
     this.data = data;
     this.div = document.getElementById(divId);
@@ -32,52 +46,75 @@ export default class ParallelCoord {
       .append('g')
       .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
 
+    // Initialize axes
+    // TODO
+    ///////////////////
+    ////////////////////
+    ////////////////////////////////
+
+    // The name of the dimensions(/axes) to use for plotting
+    this.dimensions = Object.keys(this.data[0]).filter((key) =>
+      this.propsToUse.has(key)
+    );
+
+    this.yScales = {};
+    for (const dim of this.dimensions) {
+      this.yScales[dim] = scaleLinear()
+        .domain(
+          // Show full [0,100] for applicable parameters
+          HUNDRED_RANGE.has(dim) ? [0, 100] : extent(this.data, (d) => +d[dim])
+        )
+        .range([this.height, 0])
+        .nice();
+    }
+
+    this.xScale = scalePoint()
+      .range([0, this.width])
+      .padding(0.2)
+      .domain(this.dimensions);
+
+    this.axes = new Map(
+      this.dimensions.map((d) => [d, axisLeft(this.yScales[d]).ticks(2)])
+    );
+    ////////////////////////////////////
+
     this.draw();
   }
 
   draw() {
-    // Inspired by https://www.d3-graph-gallery.com/graph/parallel_basic.html
+    this.updateScales();
+    this.drawLines();
+    this.drawAxes();
+  }
 
-    // The name of the dimensions(/axes) to use for plotting
-    const dimensions = Object.keys(this.data[0]).filter((key) =>
-      this.propsToUse.has(key)
-    );
-
-    const yScales = {};
-    for (const dim of dimensions) {
-      yScales[dim] = scaleLinear()
-        .domain(extent(this.data, (d) => +d[dim]))
-        .range([this.height, 0]);
+  /** Updates scales to fit the current data */
+  updateScales() {
+    for (const dim of this.dimensions) {
+      this.yScales[dim].domain(
+        // Show full [0,100] for applicable parameters
+        HUNDRED_RANGE.has(dim) ? [0, 100] : extent(this.data, (d) => +d[dim])
+      );
+      // this.yScales[dim].domain(extent(this.data, (d) => +d[dim]));
     }
+  }
 
-    const xScale = scalePoint()
-      .range([0, this.width])
-      .padding(0.2)
-      .domain(dimensions);
-
-    const pathGen = (d) => line()(dimensions.map((p) => [xScale(p), yScales[p](d[p])]));
-
-    // Draw lines
-    this.plot
-      .selectAll('.line')
-      .data(this.data)
-      .enter()
-      .append('path')
-      .attr('d', pathGen)
-      .attr('class', 'line')
-      .style('stroke', function(d) { if (d['cluster'] == 0) { return 'red';} else { return 'lime';}});
-
-    // Draw axes
-    this.plot
+  drawAxes() {
+    const axesSelection = this.plot
       .selectAll('.dimension')
-      .data(dimensions)
+      .data(this.dimensions);
+
+    axesSelection
       .enter()
       .append('g')
-      .attr('transform', (d) => `translate(${xScale(d)})`)
-      .each(function (d) {
-        select(this).call(axisLeft(yScales[d]));
+      .attr('class', 'dimension')
+      .merge(axesSelection)
+      .attr('transform', (d) => `translate(${this.xScale(d)})`)
+      .each((d, i, nodes) => {
+        // Reduce the number of ticks on the scale to reduce clutter
+        select(nodes[i]).transition().call(this.axes.get(d));
       })
       // Axis label
+      // TODO This is now added every time which is not rightx
       .append('text')
       .style('text-anchor', 'middle')
       .attr('y', -9)
@@ -85,8 +122,27 @@ export default class ParallelCoord {
       .attr('class', 'axis-label');
   }
 
+  drawLines() {
+    const pathGen = (d) =>
+      line()(
+        this.dimensions.map((p) => [this.xScale(p), this.yScales[p](d[p])])
+      );
+
+    const lines = this.plot.selectAll('.line').data(this.data);
+    lines.exit().remove();
+    lines
+      .enter()
+      .append('path')
+      .merge(lines)
+      .transition()
+      .attr('d', pathGen)
+      .attr('class', 'line')
+      .style('stroke', (d) => (d['cluster'] === 0 ? 'red' : 'lime'));
+  }
+
+  /** Data should have the same dimensions as the initial data */
   setData(newData) {
     this.data = newData;
-    // TODO Do i need to force an update maybe
+    this.draw();
   }
 }

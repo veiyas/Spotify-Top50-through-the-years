@@ -1,4 +1,4 @@
-import { csv, select } from 'd3';
+import { csv, select, timeParse } from 'd3';
 import ParallelCoord from './ParallelCoord';
 import RadarPlot from './RadarPlot';
 import Timeline from './timeline';
@@ -8,7 +8,7 @@ import './style.scss';
 const main = async () => {
   try {
     const data = await csv('data/top50s.csv');
-    
+
     // Attach cluster as object property for all entries
     DBSCAN(data);
 
@@ -21,6 +21,20 @@ const main = async () => {
       propsToUseRP
     );
 
+    // For testing update
+    var parseYear = timeParse('%Y');
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    pc.setData(
+      data.filter((d) => d.year.getTime() === parseYear('2017').getTime())
+    );
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    pc.setData(
+      data.filter((d) => d.year.getTime() === parseYear('2018').getTime())
+    );
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    pc.setData(
+      data.filter((d) => d.year.getTime() === parseYear('2019').getTime())
+    );
   } catch (err) {
     console.error(err);
   }
