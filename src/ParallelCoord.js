@@ -6,6 +6,19 @@ import { extent, scaleLinear, scalePoint, select, axisLeft, line } from 'd3';
      - https://core.ac.uk/download/pdf/192069397.pdf -- Mostly 3d pc
      - https://www.napier.ac.uk/~/media/worktribe/output-267438/using-curves-to-enhance-parallel-coordinate-visualisations.pdf
 */
+
+/** Name of dimensions with values up to 100 */
+const HUNDRED_RANGE = new Set([
+  'nrgy',
+  'pop',
+  'spch',
+  'acous',
+  'val',
+  'live',
+  'dnce',
+]);
+
+// Inspired by https://www.d3-graph-gallery.com/graph/parallel_basic.html
 export default class ParallelCoord {
   /** `propsToUse` is a Set */
   constructor(data, divId, propsToUse) {
@@ -35,12 +48,9 @@ export default class ParallelCoord {
 
     // Initialize axes
     // TODO
-
-    this.draw();
-  }
-
-  draw() {
-    // Inspired by https://www.d3-graph-gallery.com/graph/parallel_basic.html
+    ///////////////////
+    ////////////////////
+    ////////////////////////////////
 
     // The name of the dimensions(/axes) to use for plotting
     this.dimensions = Object.keys(this.data[0]).filter((key) =>
@@ -50,7 +60,10 @@ export default class ParallelCoord {
     this.yScales = {};
     for (const dim of this.dimensions) {
       this.yScales[dim] = scaleLinear()
-        .domain(extent(this.data, (d) => +d[dim]))
+        .domain(
+          // Show full [0,100] for applicable parameters
+          HUNDRED_RANGE.has(dim) ? [0, 100] : extent(this.data, (d) => +d[dim])
+        )
         .range([this.height, 0])
         .nice();
     }
@@ -60,29 +73,45 @@ export default class ParallelCoord {
       .padding(0.2)
       .domain(this.dimensions);
 
-    if (!this.axes) {
-      this.axes = new Map(
-        this.dimensions.map((d) => [d, axisLeft(this.yScales[d]).ticks(2)])
-      );
-    }
+    this.axes = new Map(
+      this.dimensions.map((d) => [d, axisLeft(this.yScales[d]).ticks(2)])
+    );
+    ////////////////////////////////////
 
+    this.draw();
+  }
+
+  draw() {
+    this.updateScales();
     this.drawLines();
     this.drawAxes();
   }
 
-  /** Must be called *after* scales and `this.axes` are initialized */
-  drawAxes() {
-    // TODO Fix updates for axes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  /** Updates scales to fit the current data */
+  updateScales() {
+    for (const dim of this.dimensions) {
+      this.yScales[dim].domain(
+        // Show full [0,100] for applicable parameters
+        HUNDRED_RANGE.has(dim) ? [0, 100] : extent(this.data, (d) => +d[dim])
+      );
+      // this.yScales[dim].domain(extent(this.data, (d) => +d[dim]));
+    }
+  }
 
-    this.plot
+  drawAxes() {
+    const axesSelection = this.plot
       .selectAll('.dimension')
-      .data(this.dimensions)
+      .data(this.dimensions);
+
+    axesSelection
       .enter()
       .append('g')
+      .attr('class', 'dimension')
+      .merge(axesSelection)
       .attr('transform', (d) => `translate(${this.xScale(d)})`)
       .each((d, i, nodes) => {
         // Reduce the number of ticks on the scale to reduce clutter
-        select(nodes[i]).transition().duration(2000).call(this.axes.get(d));
+        select(nodes[i]).transition().call(this.axes.get(d));
       })
       // Axis label
       .append('text')
@@ -92,7 +121,6 @@ export default class ParallelCoord {
       .attr('class', 'axis-label');
   }
 
-  /** Must be called *after* scales are initialized */
   drawLines() {
     const pathGen = (d) =>
       line()(
@@ -110,6 +138,7 @@ export default class ParallelCoord {
       .attr('class', 'line');
   }
 
+  /** Data should have the same dimensions as the initial data */
   setData(newData) {
     this.data = newData;
     // // TODO While this way kinda works, its probably not "correct"
