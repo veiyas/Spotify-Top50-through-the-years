@@ -1,6 +1,5 @@
 import { csv, select, timeParse } from 'd3';
 import ParallelCoord from './ParallelCoord';
-import RadarPlot from './RadarPlot';
 import Timeline from './timeline';
 import DBSCAN from './DBSCAN';
 import './style.scss';
@@ -15,11 +14,10 @@ const main = async () => {
     // Create visual elements
     const tl = new Timeline(data, 'timeline', propsToUseTL); // TODO Fix width and height in Timeline to fit in layout
     const pc = new ParallelCoord(data, 'parallel-coord', propsToUsePC);
-    var rp = new RadarPlot(
-      data[Math.floor(Math.random() * data.length)],
-      'radar-plot',
-      propsToUseRP
-    );
+    // var rp = new RadarPlot(
+    //   data[Math.floor(Math.random() * data.length)],
+    //   'radar-plot'
+    // );
 
     // For testing update
     var parseYear = timeParse('%Y');
@@ -50,16 +48,6 @@ const propsToUsePC = new Set([
   'live',
   'val',
   'dur',
-  'acous',
-  'spch',
-  'pop',
-]);
-
-const propsToUseRP = new Set([
-  'nrgy',
-  'dnce',
-  'live',
-  'val',
   'acous',
   'spch',
   'pop',

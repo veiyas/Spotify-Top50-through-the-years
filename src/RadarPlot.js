@@ -1,13 +1,22 @@
-import { scaleLinear, select, line, path } from 'd3';
+import { scaleLinear, select, line, path, selectAll } from 'd3';
 
 // Class to create a RadarPlot of the stats of a single song
 // Inspired by https://yangdanny97.github.io/blog/2019/03/01/D3-Spider-Chart
 export default class RadarPlot {
   /** propsToUse is a Set */
-  constructor(song, divId, propsToUse) {
+  constructor(song) {
     this.song = song;
-    this.div = document.getElementById(divId);
-    this.propsToUse = propsToUse;
+    this.oldSong = 0;
+    this.div = document.getElementById('radar-plot');
+    this.propsToUse = new Set([
+      'nrgy',
+      'dnce',
+      'live',
+      'val',
+      'acous',
+      'spch',
+      'pop',
+    ]);
 
     // Calculate width, height, etc.
     const containerWidth = this.div.clientWidth;
@@ -15,8 +24,10 @@ export default class RadarPlot {
     this.width = containerWidth - this.margin.left - this.margin.right;
     this.height = containerWidth - this.margin.top - this.margin.bottom;
 
-    // Put plot svg to this.div
+    // Clear previous content
     this.div.innerHTML = '';
+
+    // Put plot svg to this.div
     this.svg = select(this.div)
       .append('svg')
       .attr('width', this.width)
@@ -36,6 +47,7 @@ export default class RadarPlot {
   }
 
   draw() {
+    if(this.song === undefined) { return 0; }
     // The name of the dimensions to use for plotting
     const songFeatures = Object.keys(this.song).filter((key) =>
       this.propsToUse.has(key)
@@ -101,20 +113,22 @@ export default class RadarPlot {
         .attr('y', label_coordinate.y)
         .text(ft_name)
         .attr('class', 'axis-label');
-    }
-
+    }    
+    
     // Display textual song info
+    document.getElementById('song-info').innerHTML = '';
+    document.getElementById('song-data').innerHTML = '';
     select('#song-info')
       .append('p')
       .text(
-        this.song['artist'] +
-          ' — ' +
           this.song['title'] +
           ' (' +
           this.song['year'].getFullYear() +
           ')'
       )
-      .style('text-align', 'center')
+      .append('p')
+      .text(this.song['artist']);
+    select('#song-data')
       .append('p')
       .text(
         '' +
@@ -143,8 +157,13 @@ export default class RadarPlot {
     return { x: this.width / 2 + x, y: this.height / 2 - y };
   }
 
-  setData(newData) {
-    this.song = newData;
-    // TODO Do i need to force an update maybe
+  setData(newSong) {
+    // Temp debugging stuff
+    // Animating spider plots has proved to be hard
+    this.oldSong = this.song;
+    this.song = newSong;
+    console.log(selectAll('path'));
+    console.log(this.svg);
+    this.draw();
   }
 }

@@ -1,4 +1,5 @@
 import { extent, scaleLinear, scalePoint, select, axisLeft, line } from 'd3';
+import RadarPlot from './RadarPlot';
 
 /* Some links that might be useful
      - https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.258.5174&rep=rep1&type=pdf
@@ -25,6 +26,9 @@ export default class ParallelCoord {
     this.data = data;
     this.div = document.getElementById(divId);
     this.propsToUse = propsToUse;
+
+    this.radarPlot = new RadarPlot();
+    this.radarPlotExists = false;
 
     // Calculate width, height, etc.
     const containerWidth = this.div.clientWidth;
@@ -146,6 +150,20 @@ export default class ParallelCoord {
 
         // So this only works like 30% of the time for some reason
         // select(event.target).raise();
+      })
+      .on('mouseout', (event, d) => {
+        this.tooltip.transition().style('opacity', 0);
+      });
+
+      fullSelection
+      .on('click', (event, d) => {
+        if (this.radarPlotExists) {
+          this.radarPlot.setData(d);
+        }
+        else {
+          this.radarPlot = new RadarPlot(d);
+          this.radarPlotExists = true;
+        }
       })
       .on('mouseout', (event, d) => {
         this.tooltip.transition().style('opacity', 0);

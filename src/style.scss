@@ -73,10 +73,20 @@ h1 {
 }
 
 #song-info {
+  padding: 20px 20px 20px 20px;
+  border-radius: 10px;
+  font-size: 24px;
+  text-align: center;
+  background-color: rgb(37, 37, 37);
+}
+
+#song-data {
   padding: 5px 5px 5px 5px;
+  margin-top: 10px;
   border-radius: 10px;
   color: $primary-color;
-  font-size: 24px;
+  font-size: 20px;
+  text-align: center;
 }
 
 #timeline-outer {
