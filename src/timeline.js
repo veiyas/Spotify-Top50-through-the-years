@@ -1,4 +1,4 @@
-import { select, scaleTime, scaleLinear, axisBottom, axisLeft, timeParse, max, min, extent, timeFormat, nest, rollup, sum, group, line, scaleOrdinal, schemeCategory10 } from 'd3';
+import { select, scaleTime, scaleLinear, axisBottom, axisLeft, timeParse, extent, rollup, sum, line, scaleOrdinal, schemeCategory10, brushX } from 'd3';
 
 export default class Timeline {
     constructor(data, divId, propsToUse){
@@ -6,9 +6,12 @@ export default class Timeline {
         this.div = document.getElementById(divId);
         this.propsToUse = propsToUse;
 
-        this.margin = { top: 20, right: 20, bottom: 150, left: 40 },
-        this.height = 300;
-        this.width = 900;
+        const containerWidth = this.div.clientWidth;
+        const containerHeight = this.div.clientHeight;
+
+        this.margin = { top: 20, right: 10, bottom: 10, left: 40 };
+        this.width = containerWidth - this.margin.left - this.margin.right;
+        this.height = containerHeight - this.margin.top - this.margin.bottom;
 
         var parseYear= timeParse("%Y");
 
@@ -40,14 +43,18 @@ export default class Timeline {
         this.div.innerHTML = '';
         this.svg = select(this.div)
           .append('svg')
-          .attr('width', this.width+150)
+          .attr('width', this.width+100)
           .attr('height', this.height+100);
         
         this.timeline = this.svg.append("g")
             .attr("class", "timeline")
             .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
 
-        this.draw();      
+        this.xScale = scaleTime()
+            .range([0,this.width])
+            .domain(extent(this.data, d => d.year));
+
+        this.draw();     
     }
 
 
@@ -65,10 +72,16 @@ export default class Timeline {
       sumData[6] = {id: "spch", values: [{date: parseYear("2010"), score:453 },{date:parseYear("2011"), score: 512},{date:parseYear("2012"), score: 203},{date:parseYear("2013"), score: 590},{date:parseYear("2014"), score: 503},{date:parseYear("2015"), score: 670},{date:parseYear("2016"), score: 669},{date:parseYear("2017"), score:636},{date:parseYear("2018"), score:552},{date:parseYear("2019"), score:252}]}; 
       sumData[7] = {id: "pop", values: [{date: parseYear("2010"), score:4277 },{date:parseYear("2011"), score: 3279},{date:parseYear("2012"), score: 2372},{date:parseYear("2013"), score: 4543},{date:parseYear("2014"), score: 3637},{date:parseYear("2015"), score:6134},{date:parseYear("2016"), score: 5133},{date:parseYear("2017"), score:4486},{date:parseYear("2018"), score:4636},{date:parseYear("2019"), score:2615}]}; 
 
+      var avgData = sumData;
+      for(var i = 0; i < 7; i++){
+        for(var j = 0; j < sumData[i].values.length; j++){
+          avgData[i].values[j].score = sumData[i].values[j].score/50;
+        }
+      }
+      
       const attributes = Object.keys(this.data[0]).filter((key) => 
         this.propsToUse.has(key)
       );
-
 
       //Sum each column by year
       const byYear = rollup(this.data,
@@ -76,12 +89,12 @@ export default class Timeline {
         d => d.year);
 
       const xScale = scaleTime()
-        .range([0,this.width])
+        .range([0,this.width-50])
         .domain(extent(this.data, d => d.year));
-        
+
       const yScale = scaleLinear()
         .range([this.height, 0])
-        .domain([0,12000]); //Max bpm for a year is 11378
+        .domain([0,250]); //Max bpm for a year is 11378
 
       const graphLine = line()
         .x(function(d) { return xScale(d.date); })
@@ -105,9 +118,10 @@ export default class Timeline {
         .append("text")
         .style('text-anchor', 'middle')
         .attr('x', this.width/2)
-        .attr('y', 50)
+        .attr('y', 40)
         .text('year')
-        .style('fill', 'black'); 
+        .style('fill', 'white')
+        .style("font-size", "20px")
 
         //Draw y-axis
       this.timeline.append("g")
@@ -116,7 +130,7 @@ export default class Timeline {
 
       //Draw lines
       const lines = this.timeline.selectAll("lines")
-        .data(sumData)
+        .data(avgData)
         .enter()
         .append("g");
 
@@ -136,30 +150,35 @@ export default class Timeline {
         .attr("class", "legend");
 
       legend.append("circle")
-        .attr("cx", 930)
+        .attr("cx", 980)
         .attr('cy', (d, i) => i * 30 + 45)
         .attr("r", 6)
         .style("fill", d => colors(d.id))
 
-        legend.append("text")
-        .attr("x", 940)
+      legend.append("text")
+        .attr("x", 1000)
         .attr("y", (d, i) => i * 30 + 50)
         .text(d => d.id)
         .style("fill", "white");
+      
+      //Brushing
+      var brushedData = this.data;
+      var brush = brushX().extent([[0,0],[this.width,this.height]]).on("end", brushed);
 
+      this.timeline.append("g")
+        .attr("class", "brush")
+        .call(brush)
+        .call(brush.move, xScale.range());
 
+      function brushed({ selection }) {        //I slutet kalla på setData() från pc?
+        var minYear = parseYear(xScale.invert(selection[0]).getFullYear());
+        var maxYear = parseYear(xScale.invert(selection[1]).getFullYear());
 
-      //append circle to the lines. Not working
-      // this.timeline
-      //   .selectAll('circle')
-      //   .append('g')
-      //   .data(sumData)
-      //   .enter()
-      //   .append('circle')
-      //   .attr('r', 6)
-      //   .attr('cx', (d) => { console.log(d.date); return xScale(d.date);})
-      //   .attr('cy', (d) => { console.log(d.score); yScale(d.score);})
-      //   .style("fill", d => colors(d.id))
-    
+        brushedData = brushedData.filter(function (d) {
+          return d.year >= minYear && d.year <= maxYear;
+        });
+      }    
     }
+
+
   }
