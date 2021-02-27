@@ -139,9 +139,10 @@ h1 {
   }
 
   .shape {
-    fill: $accent;
-    // opacity: 0.3;
-    opacity: 1;
+    fill: rgba($accent, 0.3);
+    stroke: $accent;
+    stroke-width: 3px;
+    stroke-linejoin: arc;
   }
 }
 

@@ -47,7 +47,9 @@ export default class RadarPlot {
   }
 
   draw() {
-    if(this.song === undefined) { return 0; }
+    if (this.song === undefined) {
+      return 0;
+    }
     // The name of the dimensions to use for plotting
     const songFeatures = Object.keys(this.song).filter((key) =>
       this.propsToUse.has(key)
@@ -113,19 +115,14 @@ export default class RadarPlot {
         .attr('y', label_coordinate.y)
         .text(ft_name)
         .attr('class', 'axis-label');
-    }    
-    
+    }
+
     // Display textual song info
     document.getElementById('song-info').innerHTML = '';
     document.getElementById('song-data').innerHTML = '';
     select('#song-info')
       .append('p')
-      .text(
-          this.song['title'] +
-          ' (' +
-          this.song['year'].getFullYear() +
-          ')'
-      )
+      .text(this.song['title'] + ' (' + this.song['year'].getFullYear() + ')')
       .append('p')
       .text(this.song['artist']);
     select('#song-data')
@@ -148,6 +145,10 @@ export default class RadarPlot {
       const angle = Math.PI / 2 + (2 * Math.PI * i) / this.features.length;
       coordinates.push(this.angleToCoordinate(angle, data_point[ft_name]));
     }
+    const ft_name = this.features[0];
+    const angle = Math.PI / 2 + (2 * Math.PI * i) / this.features.length;
+    coordinates.push(this.angleToCoordinate(angle, data_point[ft_name]));
+
     return coordinates;
   }
 
