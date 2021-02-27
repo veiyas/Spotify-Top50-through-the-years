@@ -19,20 +19,20 @@ const main = async () => {
     //   'radar-plot'
     // );
 
-    // For testing update
-    var parseYear = timeParse('%Y');
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    pc.setData(
-      data.filter((d) => d.year.getTime() === parseYear('2017').getTime())
-    );
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    pc.setData(
-      data.filter((d) => d.year.getTime() === parseYear('2018').getTime())
-    );
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    pc.setData(
-      data.filter((d) => d.year.getTime() === parseYear('2019').getTime())
-    );
+    // // For testing update
+    // var parseYear = timeParse('%Y');
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
+    // pc.setData(
+    //   data.filter((d) => d.year.getTime() === parseYear('2017').getTime())
+    // );
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
+    // pc.setData(
+    //   data.filter((d) => d.year.getTime() === parseYear('2018').getTime())
+    // );
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
+    // pc.setData(
+    //   data.filter((d) => d.year.getTime() === parseYear('2019').getTime())
+    // );
   } catch (err) {
     console.error(err);
   }

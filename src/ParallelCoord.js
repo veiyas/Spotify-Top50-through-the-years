@@ -1,4 +1,12 @@
-import { extent, scaleLinear, scalePoint, select, axisLeft, line } from 'd3';
+import {
+  extent,
+  scaleLinear,
+  scalePoint,
+  select,
+  axisLeft,
+  line,
+  brushY,
+} from 'd3';
 import RadarPlot from './RadarPlot';
 
 /* Some links that might be useful
@@ -7,6 +15,9 @@ import RadarPlot from './RadarPlot';
      - https://core.ac.uk/download/pdf/192069397.pdf -- Mostly 3d pc
      - https://www.napier.ac.uk/~/media/worktribe/output-267438/using-curves-to-enhance-parallel-coordinate-visualisations.pdf
 */
+
+/** Width of the brush selections */
+const BRUSH_WIDTH = 35;
 
 /** Name of dimensions with values up to 100 */
 const HUNDRED_RANGE = new Set([
@@ -34,7 +45,9 @@ export default class ParallelCoord {
     const containerWidth = this.div.clientWidth;
     const containerHeight = this.div.clientHeight;
     this.margin = { top: 40, right: 10, bottom: 10, left: 20 };
+    /** Width excluding margins */
     this.width = containerWidth - this.margin.left - this.margin.right;
+    /** Height excluding margins */
     this.height = containerHeight - this.margin.top - this.margin.bottom;
     // TODO Something is a bit off with the margins somewhere -- fix it!
 
@@ -47,6 +60,11 @@ export default class ParallelCoord {
 
     // Create a group in svg for the actual plot space
     this.plot = this.svg
+      .append('g')
+      .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
+
+    // Group on top of this.plot to make the axes and brushes on top at all times
+    this.plotAxesGroup = this.svg
       .append('g')
       .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
 
@@ -80,6 +98,36 @@ export default class ParallelCoord {
       this.dimensions.map((d) => [d, axisLeft(this.yScales[d]).ticks(2)])
     );
 
+    // Brush
+    const selections = new Map();
+    this.brush = brushY()
+      .extent([
+        [-(BRUSH_WIDTH / 2), 0],
+        [BRUSH_WIDTH / 2, this.height],
+      ])
+      .on('start brush end', ({ selection, sourceEvent }, key) => {
+        // Inspired by https://observablehq.com/@d3/brushable-parallel-coordinates?collection=@d3/d3-brush
+        // TODO Understand and make it work hehe
+        if (selection === null) selections.delete(key);
+        else selections.set(key, selection.map(this.yScales[key].invert));
+        // ...
+        const selected = [];
+        // ...
+        this.allLinesSelection.each(function (d) {
+          const lineIsActive = Array.from(selections).every(
+            ([key, [max, min]]) => d[key] >= min && d[key] <= max
+          );
+          select(this).style('stroke', lineIsActive ? 'red' : 'blue');
+          // select(this).style('opacity', lineIsActive ? 1 : 0.1);
+          if (lineIsActive) {
+            select(this).raise();
+            selected.push(d);
+          }
+        });
+        // TODO Figure out what this does and if it is needed
+        this.svg.property('value', selected).dispatch('input');
+      });
+
     this.draw();
   }
 
@@ -101,7 +149,7 @@ export default class ParallelCoord {
   }
 
   drawAxes() {
-    const axesSelection = this.plot
+    const axesSelection = this.plotAxesGroup
       .selectAll('.dimension')
       .data(this.dimensions);
 
@@ -125,6 +173,8 @@ export default class ParallelCoord {
         // Reduce the number of ticks on the scale to reduce clutter
         select(nodes[i]).transition().call(this.axes.get(d));
       });
+
+    newAxes.merge(axesSelection).call(this.brush);
   }
 
   drawLines() {
@@ -135,15 +185,15 @@ export default class ParallelCoord {
 
     const lines = this.plot.selectAll('.line').data(this.data);
     lines.exit().remove();
-    const fullSelection = lines.enter().append('path').merge(lines);
+    this.allLinesSelection = lines.enter().append('path').merge(lines);
 
-    fullSelection
+    this.allLinesSelection
       .transition()
       .attr('d', pathGen)
       .attr('class', 'line')
       .style('stroke', (d) => (d['cluster'] === 0 ? 'red' : 'lime'));
 
-    fullSelection
+    this.allLinesSelection
       .on('mouseover', (event, d) => {
         this.tooltip.transition().duration(40).style('opacity', 1);
         this.tooltip
@@ -158,7 +208,7 @@ export default class ParallelCoord {
         this.tooltip.transition().style('opacity', 0);
       });
 
-    fullSelection
+    this.allLinesSelection
       .on('click', (event, d) => {
         if (this.radarPlotExists) {
           this.radarPlot.setData(d);
