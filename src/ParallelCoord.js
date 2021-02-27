@@ -105,23 +105,26 @@ export default class ParallelCoord {
       .selectAll('.dimension')
       .data(this.dimensions);
 
-    axesSelection
+    // Handle new axes
+    const newAxes = axesSelection
       .enter()
       .append('g')
-      .attr('class', 'dimension')
-      .merge(axesSelection)
-      .attr('transform', (d) => `translate(${this.xScale(d)})`)
-      .each((d, i, nodes) => {
-        // Reduce the number of ticks on the scale to reduce clutter
-        select(nodes[i]).transition().call(this.axes.get(d));
-      })
-      // Axis label
-      // TODO This is now added every time which is not rightx
+      .attr('class', 'dimension');
+    newAxes
       .append('text')
       .style('text-anchor', 'middle')
       .attr('y', -9)
       .text((d) => d)
       .attr('class', 'axis-label');
+
+    // Handle both new and old axes
+    newAxes
+      .merge(axesSelection)
+      .attr('transform', (d) => `translate(${this.xScale(d)})`)
+      .each((d, i, nodes) => {
+        // Reduce the number of ticks on the scale to reduce clutter
+        select(nodes[i]).transition().call(this.axes.get(d));
+      });
   }
 
   drawLines() {
@@ -155,12 +158,11 @@ export default class ParallelCoord {
         this.tooltip.transition().style('opacity', 0);
       });
 
-      fullSelection
+    fullSelection
       .on('click', (event, d) => {
         if (this.radarPlotExists) {
           this.radarPlot.setData(d);
-        }
-        else {
+        } else {
           this.radarPlot = new RadarPlot(d);
           this.radarPlotExists = true;
         }
