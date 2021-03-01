@@ -1,12 +1,37 @@
+import {min, max, extent} from 'd3';
 
 export default function mainDBSCAN(dataset) {
     var data = parseData(dataset);
-
-    const eps = 30;
+    const eps = 45;
     const minPts = 20;
     var label = []; //label datapoints to which cluster they belong. undefined = not visited, 0 = noise.
     var clusterIndex = 0; //Cluster counter. Cluster 0 is noise data points.
     const dist = euclideanDistance;
+
+    // const mmbpm = extent(data, d => d.bpm),
+    // mmnrgy = extent(data, d => d.nrgy),
+    // mmdnce = extent(data, d => d.dnce),
+    // mmlive = extent(data, d => d.live),
+    // mmval = extent(data, d => d.val),
+    // mmacous = extent(data, d => d.acous),
+    // mmpop = extent(data, d => d.pop);      
+
+    // //Trying normalizing data
+    // data.forEach(d => {
+    //     d.bpm = normalize(d.bpm, mmbpm)
+    //     d.nrgy = normalize(d.nrgy, mmnrgy)
+    //     d.dnce = normalize(d.dnce, mmdnce)
+    //     d.live = normalize(d.live, mmlive)
+    //     d.val = normalize(d.val, mmval)
+    //     d.acous = normalize(d.acous, mmacous)
+    //     d.pop = normalize(d.pop, mmpop) 
+    // });
+
+    // function normalize(val, minmax) {
+    //     return ((val-minmax[0]) / (minmax[1] - minmax[0]))
+    // }
+
+
 
     function parseData(data) {
         data.forEach(d => {
@@ -21,6 +46,8 @@ export default function mainDBSCAN(dataset) {
         })
         return data;  
     }
+
+
 
     let DBScan = function() {
         //Main loop
