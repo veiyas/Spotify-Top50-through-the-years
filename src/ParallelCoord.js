@@ -77,6 +77,7 @@ export default class ParallelCoord {
       .domain(this.dimensions);
 
     this.axes = new Map(
+      // Reduce the number of ticks on the scale to reduce clutter
       this.dimensions.map((d) => [d, axisLeft(this.yScales[d]).ticks(2)])
     );
 
@@ -122,7 +123,6 @@ export default class ParallelCoord {
       .merge(axesSelection)
       .attr('transform', (d) => `translate(${this.xScale(d)})`)
       .each((d, i, nodes) => {
-        // Reduce the number of ticks on the scale to reduce clutter
         select(nodes[i]).transition().call(this.axes.get(d));
       });
   }
