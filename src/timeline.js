@@ -160,10 +160,18 @@ export default class Timeline {
         .attr("y", (d, i) => i * 30 + 50)
         .text(d => d.id)
         .style("fill", "white");
+
+      legend.append("text")
+        .style('text-anchor', 'middle')
+        .attr("x", this.width/2)
+        .attr("y", 0)
+        .text("Average value of song atributes through the years")
+        .style("font-size", "20px")
+        .style("fill", "white");
       
       //Brushing
+      var brush = brushX().extent([[0,20],[this.width-50,this.height]]).on("end", brushed);
       var brushedData = this.data;
-      var brush = brushX().extent([[0,0],[this.width,this.height]]).on("end", brushed);
 
       this.timeline.append("g")
         .attr("class", "brush")
