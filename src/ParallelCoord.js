@@ -6,6 +6,7 @@ import {
   axisLeft,
   line,
   brushY,
+  drag,
 } from 'd3';
 import RadarPlot from './RadarPlot';
 
@@ -99,6 +100,11 @@ export default class ParallelCoord {
       this.dimensions.map((d) => [d, axisLeft(this.yScales[d]).ticks(2)])
     );
 
+    this.pathGen = (d) =>
+      line()(
+        this.dimensions.map((p) => [this.xPosition(p), this.yScales[p](d[p])])
+      );
+
     // Brush
     const selections = new Map();
     this.brush = brushY()
@@ -128,6 +134,9 @@ export default class ParallelCoord {
         // TODO Figure out what this does and if it is needed
         this.svg.property('value', selected).dispatch('input');
       });
+
+    // Axis reordering stuff
+    this.draggedAxes = new Map();
 
     this.draw();
   }
@@ -165,6 +174,33 @@ export default class ParallelCoord {
       .attr('y', -9)
       .text((d) => d)
       .attr('class', 'axis-label');
+    newAxes.call(
+      // Inspired by https://bl.ocks.org/jasondavies/1341281
+      drag()
+        .on('start', (event, d) => {
+          this.draggedAxes.set(d, this.xScale(d));
+        })
+        .on('drag', (event, d) => {
+          this.draggedAxes.set(d, Math.min(this.width, Math.max(0, event.x)));
+          this.allLinesSelection.attr('d', this.pathGen);
+          this.dimensions.sort((a, b) => this.xPosition(a) - this.xPosition(b));
+          this.xScale.domain(this.dimensions);
+          newAxes.attr('transform', (d) => `translate(${this.xPosition(d)})`);
+        })
+        .on('end', (event, d) => {
+          console.log(event);
+          this.draggedAxes.delete(d);
+          newAxes
+            .merge(axesSelection)
+            .transition()
+            .attr('transform', (d) => `translate(${this.xPosition(d)})`);
+          this.allLinesSelection.transition().attr('d', this.pathGen);
+          // this.draw(); // this messes everithing up it seems hehe
+        })
+    );
+    // newAxes.call(this.brush); // TODO This sometimes cause errors in console
+
+    // TODO Maybe let axes wiggle or something to show that they're interactable
 
     // Handle both new and old axes
     newAxes
@@ -173,23 +209,16 @@ export default class ParallelCoord {
       .each((d, i, nodes) => {
         select(nodes[i]).transition().call(this.axes.get(d));
       });
-
-    newAxes.merge(axesSelection).call(this.brush);
   }
 
   drawLines() {
-    const pathGen = (d) =>
-      line()(
-        this.dimensions.map((p) => [this.xScale(p), this.yScales[p](d[p])])
-      );
-
     const lines = this.plot.selectAll('.line').data(this.data);
     lines.exit().remove();
     this.allLinesSelection = lines.enter().append('path').merge(lines);
 
     this.allLinesSelection
       .transition()
-      .attr('d', pathGen)
+      .attr('d', this.pathGen)
       .attr('class', 'line')
       .style('stroke', (d) => (d['cluster'] === 0 ? 'red' : 'lime'));
 
@@ -220,6 +249,12 @@ export default class ParallelCoord {
       .on('mouseout', (event, d) => {
         this.tooltip.transition().style('opacity', 0);
       });
+  }
+
+  /** Returns the xPosition taking dragging into account */
+  xPosition(d) {
+    const draggedPos = this.draggedAxes.get(d);
+    return draggedPos ? draggedPos : this.xScale(d);
   }
 
   /** Data should have the same dimensions as the initial data */
