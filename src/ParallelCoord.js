@@ -180,12 +180,7 @@ export default class ParallelCoord {
     newAxes.call(
       // Inspired by https://bl.ocks.org/jasondavies/1341281
       drag()
-        // Prevent dragging when brushing
-        .filter(
-          (event) =>
-            !event.target.classList.contains('overlay') &&
-            !event.target.classList.contains('selection')
-        )
+        .filter(({ target }) => target.classList.contains('axis-label'))
         .on('start', (event, d) => {
           this.draggedAxes.set(d, this.xScale(d));
         })
