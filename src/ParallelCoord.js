@@ -8,6 +8,7 @@ import {
   brushY,
   drag,
 } from 'd3';
+import { paramFullNames } from './paramInfo';
 import RadarPlot from './RadarPlot';
 
 /* Some links that might be useful
@@ -45,7 +46,7 @@ export default class ParallelCoord {
     // Calculate width, height, etc.
     const containerWidth = this.div.clientWidth;
     const containerHeight = this.div.clientHeight;
-    this.margin = { top: 40, right: 10, bottom: 10, left: 20 };
+    this.margin = { top: 40, right: 25, bottom: 10, left: 25 };
     /** Width excluding margins */
     this.width = containerWidth - this.margin.left - this.margin.right;
     /** Height excluding margins */
@@ -174,8 +175,8 @@ export default class ParallelCoord {
     newAxes
       .append('text')
       .style('text-anchor', 'middle')
-      .attr('y', -9)
-      .text((d) => d)
+      .attr('y', -15)
+      .text((d) => paramFullNames.get(d))
       .attr('class', 'axis-label');
     newAxes.call(
       // Inspired by https://bl.ocks.org/jasondavies/1341281

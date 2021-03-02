@@ -50,7 +50,7 @@ const propsToUsePC = new Set([
   'dur',
   'acous',
   'spch',
-  'pop',
+  // 'pop',
 ]);
 
 const propsToUseTL = new Set([

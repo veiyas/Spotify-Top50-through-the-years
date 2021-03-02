@@ -105,6 +105,10 @@ h1 {
 #parallel-coord {
   height: 100%;
 
+  .tick {
+    font-family: $font;
+    font-size: 0.7rem;
+  }
   .axis-label {
     // cursor: ew-resize;
     cursor: grab;
@@ -157,7 +161,7 @@ h1 {
   // stroke: $primary-color;
   fill: $primary-color;
   font-family: $font;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 //Color scheme taken from colorbrewer: https://colorbrewer2.org/#type=qualitative&scheme=Set1&n=8
