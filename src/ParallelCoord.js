@@ -112,6 +112,9 @@ export default class ParallelCoord {
         [-(BRUSH_WIDTH / 2), 0],
         [BRUSH_WIDTH / 2, this.height],
       ])
+      // .on('start', (event) => {
+      //   event.sourceEvent.preventDefault();
+      // })
       .on('start brush end', ({ selection, sourceEvent }, key) => {
         // Inspired by https://observablehq.com/@d3/brushable-parallel-coordinates?collection=@d3/d3-brush
         // TODO Understand and make it work hehe
@@ -132,7 +135,7 @@ export default class ParallelCoord {
           }
         });
         // TODO Figure out what this does and if it is needed
-        this.svg.property('value', selected).dispatch('input');
+        // this.svg.property('value', selected).dispatch('input');
       });
 
     // Axis reordering stuff
@@ -177,6 +180,12 @@ export default class ParallelCoord {
     newAxes.call(
       // Inspired by https://bl.ocks.org/jasondavies/1341281
       drag()
+        // Prevent dragging when brushing
+        .filter(
+          (event) =>
+            !event.target.classList.contains('overlay') &&
+            !event.target.classList.contains('selection')
+        )
         .on('start', (event, d) => {
           this.draggedAxes.set(d, this.xScale(d));
         })
@@ -188,7 +197,6 @@ export default class ParallelCoord {
           newAxes.attr('transform', (d) => `translate(${this.xPosition(d)})`);
         })
         .on('end', (event, d) => {
-          console.log(event);
           this.draggedAxes.delete(d);
           newAxes
             .merge(axesSelection)
@@ -198,7 +206,7 @@ export default class ParallelCoord {
           // this.draw(); // this messes everithing up it seems hehe
         })
     );
-    // newAxes.call(this.brush); // TODO This sometimes cause errors in console
+    newAxes.append('g').call(this.brush);
 
     // TODO Maybe let axes wiggle or something to show that they're interactable
 

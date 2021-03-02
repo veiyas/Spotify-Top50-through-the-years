@@ -105,6 +105,13 @@ h1 {
 #parallel-coord {
   height: 100%;
 
+  .axis-label {
+    // cursor: ew-resize;
+    cursor: grab;
+    &:active {
+      cursor: grabbing;
+    }
+  }
   .line {
     fill: none;
     stroke: $accent;
