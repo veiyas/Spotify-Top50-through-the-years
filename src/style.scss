@@ -72,6 +72,10 @@ h1 {
   padding-bottom: $page-padding-bottom-top;
 }
 
+#song-info-data-container {
+  height: 200px;
+}
+
 #song-info {
   padding: 20px 20px 20px 20px;
   border-radius: 10px;
@@ -84,7 +88,7 @@ h1 {
   padding: 5px 5px 5px 5px;
   margin-top: 10px;
   border-radius: 10px;
-  color: $primary-color;
+  color: lightgray;
   font-size: 20px;
   text-align: center;
 }
@@ -144,6 +148,7 @@ h1 {
 }
 
 #radar-plot {
+  float: bottom;
   text {
     fill: $primary-color;
     stroke-width: 0;
