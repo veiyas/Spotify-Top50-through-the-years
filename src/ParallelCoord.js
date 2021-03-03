@@ -107,6 +107,7 @@ export default class ParallelCoord {
       );
 
     // Brush
+    // TODO Selection seems to not work when the axes are in the way
     const selections = new Map();
     this.brush = brushY()
       .extent([
@@ -138,6 +139,12 @@ export default class ParallelCoord {
         // TODO Figure out what this does and if it is needed
         // this.svg.property('value', selected).dispatch('input');
       });
+    // Clear brushes from button
+    select('#clear-pc').on('click', (event, d) => {
+      selections.clear(); // Clear filters
+      this.brushesSelection.call(this.brush.move, null); // Reset brushes
+      this.draw(); // Redraw with no filter
+    });
 
     // Axis reordering stuff
     this.draggedAxes = new Map();
@@ -199,11 +206,11 @@ export default class ParallelCoord {
             .transition()
             .attr('transform', (d) => `translate(${this.xPosition(d)})`);
           this.allLinesSelection.transition().attr('d', this.pathGen);
-          // this.draw(); // this messes everithing up it seems hehe
         })
     );
-    newAxes.append('g').call(this.brush);
-
+    if (!this.brushesSelection) {
+      this.brushesSelection = newAxes.append('g').call(this.brush);
+    }
     // TODO Maybe let axes wiggle or something to show that they're interactable
 
     // Handle both new and old axes
@@ -221,7 +228,7 @@ export default class ParallelCoord {
     this.allLinesSelection = lines.enter().append('path').merge(lines);
 
     this.allLinesSelection
-      .transition()
+      // .transition() // Not sure if this is the transition is just confusing
       .attr('d', this.pathGen)
       .attr('class', 'line')
       .style('stroke', (d) => (d['cluster'] === 0 ? 'red' : 'lime'));
