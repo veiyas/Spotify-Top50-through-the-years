@@ -129,7 +129,9 @@ export default class ParallelCoord {
           const lineIsActive = Array.from(selections).every(
             ([key, [max, min]]) => d[key] >= min && d[key] <= max
           );
-          select(this).style('stroke', lineIsActive ? 'red' : 'blue');
+          select(this)
+            .classed('inactive', !lineIsActive)
+            .classed('active', lineIsActive);
           // select(this).style('opacity', lineIsActive ? 1 : 0.1);
           if (lineIsActive) {
             select(this).raise();
@@ -184,7 +186,13 @@ export default class ParallelCoord {
       .style('text-anchor', 'middle')
       .attr('y', -15)
       .text((d) => paramFullNames.get(d))
-      .attr('class', 'axis-label');
+      .attr('class', 'axis-label')
+      .on('mouseover', function (event, d) {
+        select(this).text(`< ${paramFullNames.get(d)} >`);
+      })
+      .on('mouseout', function (event, d) {
+        select(this).text(`${paramFullNames.get(d)}`);
+      });
     newAxes.call(
       // Inspired by https://bl.ocks.org/jasondavies/1341281
       drag()
@@ -241,25 +249,21 @@ export default class ParallelCoord {
           .style('left', event.pageX + 'px')
           .style('top', event.pageY - 28 + 'px');
 
-        // So this only works like 30% of the time for some reason
-        // select(event.target).raise();
+        select(event.target).raise().classed('hover', true);
       })
       .on('mouseout', (event, d) => {
         this.tooltip.transition().style('opacity', 0);
+        select(event.target).classed('hover', false);
       });
 
-    this.allLinesSelection
-      .on('click', (event, d) => {
-        if (this.radarPlotExists) {
-          this.radarPlot.setData(d);
-        } else {
-          this.radarPlot = new RadarPlot(d);
-          this.radarPlotExists = true;
-        }
-      })
-      .on('mouseout', (event, d) => {
-        this.tooltip.transition().style('opacity', 0);
-      });
+    this.allLinesSelection.on('click', (event, d) => {
+      if (this.radarPlotExists) {
+        this.radarPlot.setData(d);
+      } else {
+        this.radarPlot = new RadarPlot(d);
+        this.radarPlotExists = true;
+      }
+    });
   }
 
   /** Returns the xPosition taking dragging into account */
