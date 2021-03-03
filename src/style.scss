@@ -74,12 +74,6 @@ footer {
   flex-direction: column;
   flex-basis: 100%;
   flex: 1;
-  // border: 1px solid red;
-
-  // &.right {
-  //   // flex: 0 0 90%;
-  //   // background-color: blue;
-  // }
   &.left {
     flex: 0 0 60%;
     margin-right: $grid-space;
@@ -140,6 +134,33 @@ svg {
   overflow: visible;
 }
 
+table {
+  height: 100%;
+  display: inline-block;
+  overflow: auto;
+}
+thead {
+  border-bottom: 1px solid $mid-gray;
+}
+tbody {
+  overflow-y: scroll;
+}
+th {
+  @extend .small-caps;
+  // position: absolute;
+  // https://stackoverflow.com/questions/14834198/table-scroll-with-html-and-css
+  padding: 0 0 0.5rem 0;
+  text-align: left;
+  padding-right: 2rem;
+}
+tr {
+}
+td {
+  padding-right: 2rem;
+  font-size: 0.9rem;
+  padding-top: 0.6rem;
+}
+
 #timeline-outer {
   height: 100%;
 }
@@ -148,13 +169,17 @@ svg {
   height: 100%;
 }
 
+/* #region parallel coord */
 #parallel-coord-outer {
   height: 100%;
   margin-top: $grid-space;
+  display: flex;
+  flex-direction: row;
 }
 
 #parallel-coord {
   height: 100%;
+  flex: 1;
 
   .tick {
     font-family: $font;
@@ -196,6 +221,12 @@ svg {
   height: 100%;
   padding-left: 30px;
 }
+
+#list-container {
+  flex-basis: 100%;
+  flex: 0 0 25rem;
+}
+/* #endregion */
 
 .tooltip {
   position: absolute;

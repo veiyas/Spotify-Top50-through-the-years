@@ -158,6 +158,7 @@ export default class ParallelCoord {
     this.updateScales();
     this.drawLines();
     this.drawAxes();
+    this.drawSongList();
   }
 
   /** Updates scales to fit the current data */
@@ -264,6 +265,14 @@ export default class ParallelCoord {
         this.radarPlotExists = true;
       }
     });
+  }
+
+  drawSongList() {
+    select('#song-list-body')
+      .selectAll('tr')
+      .data(this.data)
+      .join('tr')
+      .html((d) => `<td>${d.title}</td><td>${d.artist}</td>`);
   }
 
   /** Returns the xPosition taking dragging into account */
