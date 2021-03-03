@@ -15,6 +15,10 @@ $accent: $spotify-green;
 $primary-color: $spotify-white;
 $darker-primary-color: darken($primary-color, 10%);
 
+$red: #c73e00;
+$yellow: #d1cd17;
+$blue: #176dd1;
+
 $font: 'Poppins', sans-serif;
 
 $page-padding-bottom-top: 3rem;
@@ -156,7 +160,7 @@ svg {
     }
     &.active {
       opacity: 0.3;
-      stroke: $accent !important;
+      // stroke: $accent !important;
     }
     &.selected,
     &.hover {

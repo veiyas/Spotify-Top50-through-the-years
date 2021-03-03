@@ -239,7 +239,7 @@ export default class ParallelCoord {
       // .transition() // Not sure if this is the transition is just confusing
       .attr('d', this.pathGen)
       .attr('class', 'line')
-      .style('stroke', (d) => (d['cluster'] === 0 ? 'red' : 'lime'));
+      .style('stroke', (d) => (d['cluster'] === 0 ? '#FF5100' : undefined));
 
     this.allLinesSelection
       .on('mouseover', (event, d) => {
