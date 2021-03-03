@@ -5,7 +5,7 @@ import { scaleLinear, select, line, path, selectAll } from 'd3';
 export default class RadarPlot {
   /** propsToUse is a Set */
   constructor(song) {
-    this.song = song;    
+    this.song = song;
     this.div = document.getElementById('radar-plot');
     this.propsToUse = new Set([
       'nrgy',
@@ -46,8 +46,10 @@ export default class RadarPlot {
   }
 
   draw() {
-    if (this.song === undefined) { return 0; }
-    
+    if (this.song === undefined) {
+      return 0;
+    }
+
     // The name of the dimensions to use for plotting
     const songFeatures = Object.keys(this.song).filter((key) =>
       this.propsToUse.has(key)
@@ -59,16 +61,15 @@ export default class RadarPlot {
 
     // Draw the data with a <path>
     this.svg
-    .append('path')
-    .datum(coordinates)
-    .attr(
-      'd',
-      line()
-        .x((d) => d.x)
-        .y((d) => d.y)
-    )
-    .attr('class', 'shape');
-
+      .append('path')
+      .datum(coordinates)
+      .attr(
+        'd',
+        line()
+          .x((d) => d.x)
+          .y((d) => d.y)
+      )
+      .attr('class', 'shape');
 
     // Create circles and incremental ticks
     const ticks = [20, 40, 60, 80, 100];
@@ -116,40 +117,11 @@ export default class RadarPlot {
         .attr('class', 'axis-label');
     }
 
-    // Display textual song info
-    document.getElementById('song-info').innerHTML = '';
-    document.getElementById('song-data').innerHTML = '';
-    select('#song-info')
-      .append('p')
-      .attr('id', 'song-title-year')
-      .style('color', '#d4ffd5')
-      .text(this.song['title'] + ' (' + this.song['year'].getFullYear() + ')');
-    select('#song-info')
-      .append('p')
-      .attr('id', 'song-artist')
-      .style('color', '#f7dd86')
-      .text(this.song['artist']);
-    select('#song-data')
-      .append('p')
-      .attr('id', 'song-duration')
-      .text(
-        '' +
-          (this.song['dur'] / 60).toFixed(0) +
-          ' min ' +
-          (this.song['dur'] % 60).toFixed(0) +
-          ' sec'
-      );
-    select('#song-data')
-      .append('p')
-      .attr('id', 'song-tempo')
-      .text('' + this.song['bpm'] + ' bpm');
+    this.drawTextualInfo();
   }
 
   update() {
-    select('#song-title-year').text(this.song['title'] + ' (' + this.song['year'].getFullYear() + ')');
-    select('#song-artist').text(this.song['artist']);
-    select('#song-tempo').text('' + this.song['bpm'] + ' bpm');
-    select('#song-duration').text('' + (this.song['dur'] / 60).toFixed(0) + ' min ' + (this.song['dur'] % 60).toFixed(0) + ' sec');
+    this.drawTextualInfo();
 
     const coordinates = this.getPathCoordinates(this.song);
     this.svg
@@ -159,12 +131,24 @@ export default class RadarPlot {
       .attr(
         'd',
         line()
-        .x((d) => d.x)
-        .y((d) => d.y)
+          .x((d) => d.x)
+          .y((d) => d.y)
       )
       .attr('class', 'shape');
+  }
 
-    
+  drawTextualInfo() {
+    select('#song-title').text(this.song.title);
+    select('#song-artist').text('by ' + this.song.artist);
+    select('#song-tempo').text(this.song.bpm + ' bpm');
+    select('#song-duration').text(
+      '' +
+        (this.song['dur'] / 60).toFixed(0) +
+        ' min ' +
+        (this.song['dur'] % 60).toFixed(0) +
+        ' sec'
+    );
+    select('#song-year').text(this.song.year.getFullYear());
   }
 
   getPathCoordinates(data_point) {

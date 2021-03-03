@@ -2,18 +2,39 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
     <title>Spotify top 50 through the years</title>
   </head>
   <body>
     <h1>Spotify top 50 through the years</h1>
     <div class="row">
+      <!-- Timeline -->
       <div class="column left">
         <div id="timeline-outer" class="shadow-box">
           <div id="timeline"></div>
         </div>
+      </div>
 
+      <!-- Radar plot -->
+      <div id="radar-container" class="column right shadow-box">
+        <div id="song-info-data-container">
+          <h2 id="song-title">Please select a song :)</h2>
+          <p id="song-artist">Very good artist</p>
+          <p class="small-caps">Duration</p>
+          <p id="song-duration">Minuuuter</p>
+          <p class="small-caps">Tempo</p>
+          <p id="song-tempo">Some bpm</p>
+          <p class="small-caps">Year</p>
+          <p id="song-year">0000</p>
+        </div>
+        <div id="radar-plot"></div>
+      </div>
+    </div>
+
+    <!-- Parallel coordinates -->
+    <div class="row">
+      <div class="column">
         <div id="parallel-coord-outer" class="shadow-box">
           <div id="parallel-coord"></div>
           <!-- <div class="parallel-coord-sidebar">
@@ -21,14 +42,17 @@
           </div> -->
         </div>
       </div>
-
-      <div id="radar-container" class="column right shadow-box">
-        <div id="song-info-data-container">
-          <div id="song-info"><p>Please select a song :)</p></div>
-          <div id="song-data"></div>
-        </div>
-        <div id="radar-plot"></div>
-      </div>
     </div>
+
+    <footer>
+      Made by Algot Sandahl, Arvid Magnusson and David Robín Karlsson as part of
+      the course
+      <a href="https://liu.se/studieinfo/en/kurs/tnm048/vt-2021"
+        >TNM048 &mdash; Information Visualisation</a
+      >. The source code is available
+      <a href="https://github.com/veiyas/Spotify-top-50-through-the-years"
+        >here</a
+      >.
+    </footer>
   </body>
 </html>
