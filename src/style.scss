@@ -153,12 +153,18 @@ th {
   text-align: left;
   padding-right: 2rem;
 }
-tr {
-}
+// tr:nth-child(even) {
+//   background-color: lighten($lighter-background, 4%);
+// }
 td {
   padding-right: 2rem;
   font-size: 0.9rem;
   padding-top: 0.6rem;
+
+  // max-width: 15rem;
+  // overflow: hidden;
+  // text-overflow: ellipsis;
+  // white-space: nowrap;
 }
 
 #timeline-outer {

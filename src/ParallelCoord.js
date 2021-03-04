@@ -138,6 +138,12 @@ export default class ParallelCoord {
             selected.push(d);
           }
         });
+        this.songList.each(function (d) {
+          const lineIsActive = Array.from(selections).every(
+            ([key, [max, min]]) => d[key] >= min && d[key] <= max
+          );
+          select(this).style('display', lineIsActive ? undefined : 'none');
+        });
         // TODO Figure out what this does and if it is needed
         // this.svg.property('value', selected).dispatch('input');
       });
@@ -268,7 +274,7 @@ export default class ParallelCoord {
   }
 
   drawSongList() {
-    select('#song-list-body')
+    this.songList = select('#song-list-body')
       .selectAll('tr')
       .data(this.data)
       .join('tr')
