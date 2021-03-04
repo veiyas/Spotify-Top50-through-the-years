@@ -12,8 +12,8 @@ const main = async () => {
     DBSCAN(data);
 
     // Create visual elements
-    const tl = new Timeline(data, 'timeline', propsToUseTL); // TODO Fix width and height in Timeline to fit in layout
     const pc = new ParallelCoord(data, 'parallel-coord', propsToUsePC);
+    const tl = new Timeline(data, 'timeline', propsToUseTL, pc); // TODO Fix width and height in Timeline to fit in layout
     // var rp = new RadarPlot(
     //   data[Math.floor(Math.random() * data.length)],
     //   'radar-plot'

@@ -1,10 +1,11 @@
-import { select, scaleTime, scaleLinear, axisBottom, axisLeft, timeParse, extent, rollup, sum, line, scaleOrdinal, schemeCategory10, brushX } from 'd3';
+import { select, scaleTime, scaleLinear, axisBottom, axisLeft, timeParse, extent, line, scaleOrdinal, schemeCategory10, brushX } from 'd3';
 
 export default class Timeline {
-    constructor(data, divId, propsToUse){
+    constructor(data, divId, propsToUse, pc){
         this.data = data;
         this.div = document.getElementById(divId);
         this.propsToUse = propsToUse;
+        this.pc = pc;
 
         const containerWidth = this.div.clientWidth;
         const containerHeight = this.div.clientHeight;
@@ -19,40 +20,15 @@ export default class Timeline {
             d.year = parseYear(d.year);
         });
 
-        var slices = this.data.columns.slice(1).map(function(id) {
-          return {
-            id: id,
-            values: data.map(function(d){
-              return {
-                date: d.year,
-                score: +d[id]
-              };
-            })
-          };
-        });
-
-        this.newSlices = [];
-
-        var counter = 0;
-        for (var i = 4; i < 14; i++) {
-          if (i == 7 || i == 10) continue;
-          this.newSlices[counter] = slices[i];
-          counter++;
-        }
-
         this.div.innerHTML = '';
         this.svg = select(this.div)
           .append('svg')
-          .attr('width', this.width+100)
-          .attr('height', this.height+100);
+          .attr('width', this.width)
+          .attr('height', this.height);
         
         this.timeline = this.svg.append("g")
             .attr("class", "timeline")
             .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
-
-        this.xScale = scaleTime()
-            .range([0,this.width])
-            .domain(extent(this.data, d => d.year));
 
         this.draw();     
     }
@@ -79,22 +55,13 @@ export default class Timeline {
         }
       }
       
-      const attributes = Object.keys(this.data[0]).filter((key) => 
-        this.propsToUse.has(key)
-      );
-
-      //Sum each column by year
-      const byYear = rollup(this.data,
-        v => Object.fromEntries(attributes.map(col => [col, sum(v, d => +d[col])])),
-        d => d.year);
-
       const xScale = scaleTime()
         .range([0,this.width-50])
         .domain(extent(this.data, d => d.year));
 
       const yScale = scaleLinear()
         .range([this.height, 0])
-        .domain([0,250]); //Max bpm for a year is 11378
+        .domain([0,250]);
 
       const graphLine = line()
         .x(function(d) { return xScale(d.date); })
@@ -144,7 +111,7 @@ export default class Timeline {
       //Add line legend
       var legend = this.timeline
         .selectAll('g.legend')
-        .data(sumData)
+        .data(avgData)
         .enter()
         .append("g")
         .attr("class", "legend");
@@ -161,7 +128,7 @@ export default class Timeline {
         .text(d => d.id)
         .style("fill", "white");
 
-      legend.append("text")
+      this.timeline.append("text")
         .style('text-anchor', 'middle')
         .attr("x", this.width/2)
         .attr("y", 0)
@@ -171,22 +138,24 @@ export default class Timeline {
       
       //Brushing
       var brush = brushX().extent([[0,20],[this.width-50,this.height]]).on("end", brushed);
-      var brushedData = this.data;
+      var container = this.data; 
+      var parallel = this.pc;
 
       this.timeline.append("g")
         .attr("class", "brush")
         .call(brush)
         .call(brush.move, xScale.range());
 
-      function brushed({ selection }) {        //I slutet kalla på setData() från pc?
+      function brushed({ selection }) { 
+        var brushedData = container;
         var minYear = parseYear(xScale.invert(selection[0]).getFullYear());
         var maxYear = parseYear(xScale.invert(selection[1]).getFullYear());
 
         brushedData = brushedData.filter(function (d) {
           return d.year >= minYear && d.year <= maxYear;
         });
+        parallel.setData(brushedData);
       }    
     }
-
 
   }
