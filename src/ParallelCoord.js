@@ -46,7 +46,7 @@ export default class ParallelCoord {
     // Calculate width, height, etc.
     const containerWidth = this.div.clientWidth;
     const containerHeight = this.div.clientHeight;
-    this.margin = { top: 40, right: 25, bottom: 10, left: 25 };
+    this.margin = { top: 31, right: 25, bottom: 10, left: 25 };
     /** Width excluding margins */
     this.width = containerWidth - this.margin.left - this.margin.right;
     /** Height excluding margins */

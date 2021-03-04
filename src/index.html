@@ -12,6 +12,18 @@
       <!-- Timeline -->
       <div class="column left">
         <div id="timeline-outer" class="shadow-box">
+          <div class="sidebar">
+            <h2>Averaged song attributes per year</h2>
+            <!-- <p class="small-caps">Description</p>
+            <p>
+              Each line represents the average value of a song attribute in the
+              spotify top 50.
+            </p> -->
+            <p class="small-caps">Color meanings</p>
+            <ul id="timeline-legend" class="legend">
+
+            </ul>
+          </div>
           <div id="timeline"></div>
         </div>
       </div>
@@ -36,9 +48,23 @@
     <div class="row">
       <div class="column">
         <div id="parallel-coord-outer" class="shadow-box">
+          <div class="sidebar">
+            <h2>0000&ndash;0000</h2>
+            <p class="small-caps">Description</p>
+            <p>Here each song is represented by a polyline</p>
+            <p class="small-caps">Settings</p>
+            <button id="clear-pc">Clear filters</button>
+            <p class="small-caps">Color meanings</p>
+            <ul class="legend">
+              <li>hej</li>
+              <li>hej</li>
+            </ul>
+          </div>
+
           <div id="parallel-coord"></div>
+
           <div id="list-container">
-            <h2>Ostakssoppa</h2>
+            <h2>Songs in selection</h2>
             <table>
               <thead>
                 <tr>
@@ -49,9 +75,6 @@
               <tbody id="song-list-body"></tbody>
             </table>
           </div>
-          <!-- <div class="parallel-coord-sidebar">
-            <button id="clear-pc">Clear filters</button>
-          </div> -->
         </div>
       </div>
     </div>

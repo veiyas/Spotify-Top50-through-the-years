@@ -28,6 +28,10 @@ $h1-font-size: 2.7rem;
 
 $main-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
 
+:root {
+  font-size: 14px;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -101,12 +105,16 @@ h2 {
   line-height: 1.2;
 }
 
+p {
+  font-size: 0.9rem;
+}
+
 .small-caps {
   text-transform: uppercase;
   font-weight: 600;
   color: $mid-gray;
   font-size: 0.72rem;
-  padding: 1.3rem 0 0.4rem 0;
+  padding: 1.3rem 0 0.6rem 0;
 }
 
 button {
@@ -117,7 +125,7 @@ button {
   font-family: $font;
   // font-weight: 500;
   border-radius: 3px;
-  height: 100%;
+  // height: 100%;
   cursor: pointer;
   transition-duration: 200ms;
   padding-left: 1rem;
@@ -167,12 +175,45 @@ td {
   // white-space: nowrap;
 }
 
+.legend {
+  li {
+    font-size: 0.9rem;
+    padding-bottom: 0.6rem;
+    background-color: red;
+    background-color: unset !important;
+  }
+}
+
+.color-dot {
+  $diam: 0.8rem;
+  content: '';
+  display: inline-block;
+  width: $diam;
+  height: $diam;
+  border-radius: $diam / 2;
+  margin-right: 0.5rem;
+}
+
+.tick {
+  font-family: $font;
+  font-size: 0.7rem;
+}
+
+.axis-label {
+  fill: $primary-color;
+  font-family: $font;
+  font-size: 0.9rem;
+}
+
 #timeline-outer {
   height: 100%;
+  display: flex;
+  flex-direction: row;
 }
 
 #timeline {
   height: 100%;
+  flex: 1;
 }
 
 /* #region parallel coord */
@@ -187,10 +228,6 @@ td {
   height: 100%;
   flex: 1;
 
-  .tick {
-    font-family: $font;
-    font-size: 0.7rem;
-  }
   .axis-label {
     // cursor: ew-resize;
     cursor: grab;
@@ -222,10 +259,9 @@ td {
   }
 }
 
-.parallel-coord-sidebar {
-  // padding-top: 3rem;
+.sidebar {
   height: 100%;
-  padding-left: 30px;
+  flex: 0 0 12rem;
 }
 
 #list-container {
@@ -249,11 +285,12 @@ td {
   height: 100%;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
 }
 
 #song-info-data-container {
   height: 100%;
-  flex: 0 0 35%;
+  flex: 1 0 35%;
 }
 
 #song-artist {
@@ -261,25 +298,21 @@ td {
 }
 
 #radar-plot {
+  height: 100%;
   flex-basis: 100%;
   text {
     fill: $primary-color;
     stroke-width: 0;
   }
-
+  .axis-label {
+    font-size: 0.75rem;
+  }
   .shape {
     fill: rgba($accent, 0.3);
     stroke: $accent;
     stroke-width: 3px;
     stroke-linejoin: arc;
   }
-}
-
-.axis-label {
-  // stroke: $primary-color;
-  fill: $primary-color;
-  font-family: $font;
-  font-size: 0.9rem;
 }
 
 //Color scheme taken from colorbrewer: https://colorbrewer2.org/#type=qualitative&scheme=Set1&n=8

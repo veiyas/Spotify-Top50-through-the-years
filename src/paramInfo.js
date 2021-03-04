@@ -11,4 +11,16 @@ const paramFullNames = new Map([
   ['pop', 'popularity'],
 ]);
 
-export { paramFullNames };
+const paramFullNamesCompact = new Map([
+  ['bpm', ['tempo']],
+  ['nrgy', ['energy']],
+  ['live', ['liveness']],
+  ['dnce', ['dancea-', 'bility']],
+  ['val', ['valence']],
+  ['dur', ['duration']],
+  ['acous', ['acoustic-', 'ness']],
+  ['spch', ['speechi-', 'ness']],
+  ['pop', ['popularity']],
+]);
+
+export { paramFullNames, paramFullNamesCompact };

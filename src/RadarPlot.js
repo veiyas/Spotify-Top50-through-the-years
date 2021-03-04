@@ -1,4 +1,5 @@
-import { scaleLinear, select, line, path, selectAll } from 'd3';
+import { scaleLinear, select, line } from 'd3';
+import { paramFullNamesCompact } from './paramInfo';
 
 // Class to create a RadarPlot of the stats of a single song
 // Inspired by https://yangdanny97.github.io/blog/2019/03/01/D3-Spider-Chart
@@ -18,8 +19,11 @@ export default class RadarPlot {
     ]);
 
     // Calculate width, height, etc.
-    const containerWidth = this.div.clientWidth;
-    this.margin = { top: 0, right: 10, bottom: 10, left: 10 };
+    const containerWidth = Math.min(
+      this.div.clientWidth,
+      this.div.clientHeight
+    );
+    this.margin = { top: 0, right: 0, bottom: 0, left: 0 };
     this.width = containerWidth - this.margin.left - this.margin.right;
     this.height = containerWidth - this.margin.top - this.margin.bottom;
 
@@ -39,7 +43,7 @@ export default class RadarPlot {
 
     this.radialScale = scaleLinear()
       .domain([0, 100])
-      .range([0, this.width / 2 - 60]);
+      .range([0, this.width / 2 - 40]);
     this.features = [];
 
     this.draw();
@@ -72,7 +76,7 @@ export default class RadarPlot {
       .attr('class', 'shape');
 
     // Create circles and incremental ticks
-    const ticks = [20, 40, 60, 80, 100];
+    const ticks = [25, 50, 75, 100];
     ticks.forEach((t) =>
       this.svg
         .append('circle')
@@ -87,17 +91,18 @@ export default class RadarPlot {
     ticks.forEach((t) =>
       this.svg
         .append('text')
+        .attr('class', 'tick')
         .attr('x', this.width / 2 + 2)
         .attr('y', this.height / 2 - 2 - this.radialScale(t))
         .text(t.toString())
     );
 
     // Draw axis lines and labels
-    for (var i = 0; i < songFeatures.length; i++) {
-      let ft_name = songFeatures[i];
-      let angle = Math.PI / 2 + (2 * Math.PI * i) / songFeatures.length;
-      let line_coordinate = this.angleToCoordinate(angle, 100);
-      let label_coordinate = this.angleToCoordinate(angle, 110);
+    for (let i = 0; i < songFeatures.length; i++) {
+      const ft_name = paramFullNamesCompact.get(songFeatures[i]);
+      const angle = Math.PI / 2 + (2 * Math.PI * i) / songFeatures.length;
+      const line_coordinate = this.angleToCoordinate(angle, 100);
+      const label_coordinate = this.angleToCoordinate(angle, 130);
 
       // Draw axis line
       this.svg
@@ -111,10 +116,18 @@ export default class RadarPlot {
       // Draw axis label
       this.svg
         .append('text')
-        .attr('x', label_coordinate.x - 15)
+        .attr('x', label_coordinate.x)
         .attr('y', label_coordinate.y)
-        .text(ft_name)
-        .attr('class', 'axis-label');
+        .text(ft_name[0])
+        .attr('class', 'axis-label')
+        .attr('text-anchor', 'middle');
+      this.svg
+        .append('text')
+        .attr('x', label_coordinate.x)
+        .attr('y', label_coordinate.y + 15)
+        .text(ft_name[1])
+        .attr('class', 'axis-label')
+        .attr('text-anchor', 'middle');
     }
 
     this.drawTextualInfo();
