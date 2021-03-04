@@ -11,4 +11,15 @@ const paramFullNames = new Map([
   ['pop', 'popularity'],
 ]);
 
-export { paramFullNames };
+/** Name of dimensions with values up to 100 */
+const hundredRange = new Set([
+  'nrgy',
+  'pop',
+  'spch',
+  'acous',
+  'val',
+  'live',
+  'dnce',
+]);
+
+export { paramFullNames, hundredRange };

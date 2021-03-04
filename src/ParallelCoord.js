@@ -8,7 +8,7 @@ import {
   brushY,
   drag,
 } from 'd3';
-import { paramFullNames } from './paramInfo';
+import { paramFullNames, hundredRange } from './paramInfo';
 import RadarPlot from './RadarPlot';
 
 /* Some links that might be useful
@@ -20,17 +20,6 @@ import RadarPlot from './RadarPlot';
 
 /** Width of the brush selections */
 const BRUSH_WIDTH = 35;
-
-/** Name of dimensions with values up to 100 */
-const HUNDRED_RANGE = new Set([
-  'nrgy',
-  'pop',
-  'spch',
-  'acous',
-  'val',
-  'live',
-  'dnce',
-]);
 
 // Inspired by https://www.d3-graph-gallery.com/graph/parallel_basic.html
 export default class ParallelCoord {
@@ -85,7 +74,7 @@ export default class ParallelCoord {
       this.yScales[dim] = scaleLinear()
         .domain(
           // Show full [0,100] for applicable parameters
-          HUNDRED_RANGE.has(dim) ? [0, 100] : extent(this.data, (d) => +d[dim])
+          hundredRange.has(dim) ? [0, 100] : extent(this.data, (d) => +d[dim])
         )
         .range([this.height, 0])
         .nice();
@@ -114,9 +103,6 @@ export default class ParallelCoord {
         [-(BRUSH_WIDTH / 2), 0],
         [BRUSH_WIDTH / 2, this.height],
       ])
-      // .on('start', (event) => {
-      //   event.sourceEvent.preventDefault();
-      // })
       .on('start brush end', ({ selection, sourceEvent }, key) => {
         // Inspired by https://observablehq.com/@d3/brushable-parallel-coordinates?collection=@d3/d3-brush
         // TODO Understand and make it work hehe
@@ -132,7 +118,6 @@ export default class ParallelCoord {
           select(this)
             .classed('inactive', !lineIsActive)
             .classed('active', lineIsActive);
-          // select(this).style('opacity', lineIsActive ? 1 : 0.1);
           if (lineIsActive) {
             select(this).raise();
             selected.push(d);
@@ -165,7 +150,7 @@ export default class ParallelCoord {
     for (const dim of this.dimensions) {
       this.yScales[dim].domain(
         // Show full [0,100] for applicable parameters
-        HUNDRED_RANGE.has(dim) ? [0, 100] : extent(this.data, (d) => +d[dim])
+        hundredRange.has(dim) ? [0, 100] : extent(this.data, (d) => +d[dim])
       );
       // this.yScales[dim].domain(extent(this.data, (d) => +d[dim]));
     }
@@ -219,7 +204,6 @@ export default class ParallelCoord {
     if (!this.brushesSelection) {
       this.brushesSelection = newAxes.append('g').call(this.brush);
     }
-    // TODO Maybe let axes wiggle or something to show that they're interactable
 
     // Handle both new and old axes
     newAxes
@@ -236,7 +220,7 @@ export default class ParallelCoord {
     this.allLinesSelection = lines.enter().append('path').merge(lines);
 
     this.allLinesSelection
-      // .transition() // Not sure if this is the transition is just confusing
+      .transition() // Not sure if this is the transition is just confusing
       .attr('d', this.pathGen)
       .attr('class', 'line')
       .style('stroke', (d) => (d['cluster'] === 0 ? '#FF5100' : undefined));
