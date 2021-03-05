@@ -54,11 +54,12 @@ footer {
   &:hover {
     color: #b3b3b3;
   }
-  a {
-    color: unset;
-    &:hover {
-      color: $accent;
-    }
+}
+
+a {
+  color: unset;
+  &:hover {
+    color: $accent;
   }
 }
 
@@ -107,6 +108,7 @@ h2 {
 
 p {
   font-size: 0.9rem;
+  line-height: 1.2;
 }
 
 .small-caps {

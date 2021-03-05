@@ -127,6 +127,7 @@ export default class ParallelCoord {
     // Axis reordering stuff
     this.draggedAxes = new Map();
 
+    this.updateYearDisplay();
     this.drawLines();
     this.drawAxes();
     this.drawSongList();
@@ -230,6 +231,19 @@ export default class ParallelCoord {
     });
   }
 
+  updateYearDisplay() {
+    const [min, max] = extent(this.data, (d) => +d.year);
+    const startYear = new Date(min);
+    if (min === max) {
+      select('#year-disp-pc').text('Year ' + startYear.getFullYear());
+    } else {
+      const endYear = new Date(max);
+      select('#year-disp-pc').text(
+        `Years ${startYear.getFullYear()}–${endYear.getFullYear()}`
+      );
+    }
+  }
+
   drawSongList() {
     this.songList = select('#song-list-body')
       .selectAll('tr')
@@ -256,6 +270,7 @@ export default class ParallelCoord {
    */
   setData(newData) {
     this.data = newData;
+    this.updateYearDisplay();
     this.drawLines();
   }
 }
