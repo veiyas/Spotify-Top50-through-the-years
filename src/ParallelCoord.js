@@ -131,6 +131,20 @@ export default class ParallelCoord {
     // Axis reordering stuff
     this.draggedAxes = new Map();
 
+    // Draw legend
+    // TODO Or rather don't for now, but we prbobaly should
+    // const
+    // const legend = select('#pc-legend')
+    //   .selectAll('li')
+    //   .data()
+    //   .enter()
+    //   .append('li');
+    // legend
+    //   .append('span')
+    //   .attr('class', 'color-dot')
+    //   .style('background-color', (d) => colors(d.id));
+    // legend.append('span').text((d) => paramFullNames.get(d.id));
+
     this.updateYearDisplay();
     this.drawLines();
     this.drawAxes();
