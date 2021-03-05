@@ -13,9 +13,6 @@ const main = async () => {
 
     // Create visual elements
     const pc = new ParallelCoord(data, 'parallel-coord', propsToUsePC);
-    // HACK For some reason the lines in pc are drawn twice on top of each other on first draw
-    // unless there is a small pause here (and i don't have the time to solve it properly now).
-    await new Promise((resolve) => setTimeout(resolve, 100));
     const tl = new Timeline(data, 'timeline', propsToUseTL, pc);
     // var rp = new RadarPlot(
     //   data[Math.floor(Math.random() * data.length)],
