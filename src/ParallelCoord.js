@@ -8,7 +8,7 @@ import {
   brushY,
   drag,
 } from 'd3';
-import { paramFullNames } from './paramInfo';
+import { paramFullNames, hundredRange } from './paramInfo';
 import RadarPlot from './RadarPlot';
 
 /* Some links that might be useful
@@ -20,17 +20,6 @@ import RadarPlot from './RadarPlot';
 
 /** Width of the brush selections */
 const BRUSH_WIDTH = 35;
-
-/** Name of dimensions with values up to 100 */
-const HUNDRED_RANGE = new Set([
-  'nrgy',
-  'pop',
-  'spch',
-  'acous',
-  'val',
-  'live',
-  'dnce',
-]);
 
 // Inspired by https://www.d3-graph-gallery.com/graph/parallel_basic.html
 export default class ParallelCoord {
@@ -51,7 +40,6 @@ export default class ParallelCoord {
     this.width = containerWidth - this.margin.left - this.margin.right;
     /** Height excluding margins */
     this.height = containerHeight - this.margin.top - this.margin.bottom;
-    // TODO Something is a bit off with the margins somewhere -- fix it!
 
     // Put plot svg to this.div
     this.div.innerHTML = '';
@@ -85,7 +73,7 @@ export default class ParallelCoord {
       this.yScales[dim] = scaleLinear()
         .domain(
           // Show full [0,100] for applicable parameters
-          HUNDRED_RANGE.has(dim) ? [0, 100] : extent(this.data, (d) => +d[dim])
+          hundredRange.has(dim) ? [0, 100] : extent(this.data, (d) => +d[dim])
         )
         .range([this.height, 0])
         .nice();
@@ -107,88 +95,53 @@ export default class ParallelCoord {
       );
 
     // Brush
-    // TODO Selection seems to not work when the axes are in the way
-    const selections = new Map();
+    this.selections = new Map();
+    const outerThis = this; // For access to this in callback where this is rebound
     this.brush = brushY()
       .extent([
         [-(BRUSH_WIDTH / 2), 0],
         [BRUSH_WIDTH / 2, this.height],
       ])
-      // .on('start', (event) => {
-      //   event.sourceEvent.preventDefault();
-      // })
       .on('start brush end', ({ selection, sourceEvent }, key) => {
         // Inspired by https://observablehq.com/@d3/brushable-parallel-coordinates?collection=@d3/d3-brush
-        // TODO Understand and make it work hehe
-        if (selection === null) selections.delete(key);
-        else selections.set(key, selection.map(this.yScales[key].invert));
-        // ...
-        const selected = [];
-        // ...
+        if (selection === null) this.selections.delete(key);
+        else this.selections.set(key, selection.map(this.yScales[key].invert));
+
         this.allLinesSelection.each(function (d) {
-          const lineIsActive = Array.from(selections).every(
-            ([key, [max, min]]) => d[key] >= min && d[key] <= max
-          );
+          const lineIsActive = outerThis.isInBrushRange(d);
           select(this)
             .classed('inactive', !lineIsActive)
             .classed('active', lineIsActive);
-          // select(this).style('opacity', lineIsActive ? 1 : 0.1);
           if (lineIsActive) {
             select(this).raise();
-            selected.push(d);
           }
         });
-        this.songList.each(function (d) {
-          const lineIsActive = Array.from(selections).every(
-            ([key, [max, min]]) => d[key] >= min && d[key] <= max
-          );
-          select(this).style('display', lineIsActive ? undefined : 'none');
-        });
-        // TODO Figure out what this does and if it is needed
-        // this.svg.property('value', selected).dispatch('input');
       });
     // Clear brushes from button
     select('#clear-pc').on('click', (event, d) => {
-      selections.clear(); // Clear filters
+      this.selections.clear(); // Clear filters
       this.brushesSelection.call(this.brush.move, null); // Reset brushes
-      this.draw(); // Redraw with no filter
+      this.drawLines(); // Redraw with no filter
     });
 
     // Axis reordering stuff
     this.draggedAxes = new Map();
 
-    this.draw();
-  }
-
-  draw() {
-    this.updateScales();
     this.drawLines();
     this.drawAxes();
     this.drawSongList();
   }
 
-  /** Updates scales to fit the current data */
-  updateScales() {
-    for (const dim of this.dimensions) {
-      this.yScales[dim].domain(
-        // Show full [0,100] for applicable parameters
-        HUNDRED_RANGE.has(dim) ? [0, 100] : extent(this.data, (d) => +d[dim])
-      );
-      // this.yScales[dim].domain(extent(this.data, (d) => +d[dim]));
-    }
-  }
-
   drawAxes() {
     const axesSelection = this.plotAxesGroup
       .selectAll('.dimension')
-      .data(this.dimensions);
-
-    // Handle new axes
-    const newAxes = axesSelection
+      .data(this.dimensions)
       .enter()
       .append('g')
       .attr('class', 'dimension');
-    newAxes
+
+    // Add axis labels
+    axesSelection
       .append('text')
       .style('text-anchor', 'middle')
       .attr('y', -15)
@@ -200,7 +153,9 @@ export default class ParallelCoord {
       .on('mouseout', function (event, d) {
         select(this).text(`${paramFullNames.get(d)}`);
       });
-    newAxes.call(
+
+    // Add axis reordering functionality
+    axesSelection.call(
       // Inspired by https://bl.ocks.org/jasondavies/1341281
       drag()
         .filter(({ target }) => target.classList.contains('axis-label'))
@@ -212,29 +167,29 @@ export default class ParallelCoord {
           this.allLinesSelection.attr('d', this.pathGen);
           this.dimensions.sort((a, b) => this.xPosition(a) - this.xPosition(b));
           this.xScale.domain(this.dimensions);
-          newAxes.attr('transform', (d) => `translate(${this.xPosition(d)})`);
+          axesSelection.attr(
+            'transform',
+            (d) => `translate(${this.xPosition(d)})`
+          );
         })
         .on('end', (event, d) => {
           this.draggedAxes.delete(d);
-          newAxes
-            .merge(axesSelection)
+          axesSelection
             .transition()
             .attr('transform', (d) => `translate(${this.xPosition(d)})`);
           this.allLinesSelection.transition().attr('d', this.pathGen);
         })
     );
-    if (!this.brushesSelection) {
-      this.brushesSelection = newAxes.append('g').call(this.brush);
-    }
-    // TODO Maybe let axes wiggle or something to show that they're interactable
 
-    // Handle both new and old axes
-    newAxes
-      .merge(axesSelection)
+    // Add axes
+    axesSelection
       .attr('transform', (d) => `translate(${this.xScale(d)})`)
       .each((d, i, nodes) => {
         select(nodes[i]).transition().call(this.axes.get(d));
       });
+
+    // Add brush to axes
+    this.brushesSelection = axesSelection.append('g').call(this.brush);
   }
 
   drawLines() {
@@ -246,6 +201,8 @@ export default class ParallelCoord {
       // .transition() // Not sure if this is the transition is just confusing
       .attr('d', this.pathGen)
       .attr('class', 'line')
+      .classed('inactive', (d) => !this.isInBrushRange(d))
+      .classed('active', (d) => this.isInBrushRange(d))
       .style('stroke', (d) => (d['cluster'] === 0 ? '#FF5100' : undefined));
 
     this.allLinesSelection
@@ -281,15 +238,24 @@ export default class ParallelCoord {
       .html((d) => `<td>${d.title}</td><td>${d.artist}</td>`);
   }
 
+  isInBrushRange(d) {
+    return Array.from(this.selections).every(
+      ([key, [max, min]]) => d[key] >= min && d[key] <= max
+    );
+  }
+
   /** Returns the xPosition taking dragging into account */
   xPosition(d) {
     const draggedPos = this.draggedAxes.get(d);
     return draggedPos ? draggedPos : this.xScale(d);
   }
 
-  /** Data should have the same dimensions as the initial data */
+  /** Data should have the same dimensions as the initial data.
+   *  To make comparisons easier the axes are not updated, thus new
+   *  data must have the same or smaller extent than the initial data
+   */
   setData(newData) {
     this.data = newData;
-    this.draw();
+    this.drawLines();
   }
 }
