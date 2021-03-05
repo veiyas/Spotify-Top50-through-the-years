@@ -23,7 +23,7 @@ export default class Timeline {
     const containerWidth = this.div.clientWidth;
     const containerHeight = this.div.clientHeight;
 
-    this.margin = { top: 0, right: 0, bottom: 10, left: 25 };
+    this.margin = { top: 10, right: 10, bottom: 10, left: 40 };
     this.width = containerWidth - this.margin.left - this.margin.right;
     this.height = containerHeight - this.margin.top - this.margin.bottom;
 
@@ -71,8 +71,9 @@ export default class Timeline {
     }
 
     const xScale = scaleTime()
-      .range([0, this.width - 50])
-      .domain(extent(this.data, (d) => d.year));
+      .range([0, this.width])
+      .domain(extent(this.data, (d) => d.year))
+      .nice();
 
     const yScale = scaleLinear().range([this.height, 0]).domain([0, 250]);
 
@@ -99,17 +100,13 @@ export default class Timeline {
       .append('g')
       .attr('class', 'axis axis-x')
       .attr('transform', 'translate(0,' + this.height + ')')
-      .call(axisBottom(xScale))
-      .append('text')
-      .style('text-anchor', 'middle')
-      .attr('x', this.width / 2)
-      .attr('y', 40);
+      .call(axisBottom(xScale));
 
     //Draw y-axis
     this.timeline
       .append('g')
       .attr('class', 'axis axis--y')
-      .call(axisLeft(yScale));
+      .call(axisLeft(yScale).ticks(7));
 
     //Draw lines
     const lines = this.timeline
@@ -144,7 +141,7 @@ export default class Timeline {
     var brush = brushX()
       .extent([
         [0, 20],
-        [this.width - 50, this.height],
+        [this.width, this.height],
       ])
       .on('end', brushed);
     var container = this.data;
