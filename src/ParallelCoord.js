@@ -113,12 +113,19 @@ export default class ParallelCoord {
             select(this).raise();
           }
         });
+        this.songList.each(function (d) {
+          select(this).style(
+            'display',
+            outerThis.isInBrushRange(d) ? undefined : 'none'
+          );
+        });
       });
     // Clear brushes from button
     select('#clear-pc').on('click', (event, d) => {
       this.selections.clear(); // Clear filters
       this.brushesSelection.call(this.brush.move, null); // Reset brushes
       this.drawLines(); // Redraw with no filter
+      this.drawSongList();
     });
 
     // Axis reordering stuff
@@ -260,7 +267,8 @@ export default class ParallelCoord {
       .selectAll('tr')
       .data(this.data)
       .join('tr')
-      .html((d) => `<td>${d.title}</td><td>${d.artist}</td>`);
+      .html((d) => `<td>${d.title}</td><td>${d.artist}</td>`)
+      .style('display', (d) => (this.isInBrushRange(d) ? undefined : 'none'));
   }
 
   isInBrushRange(d) {
@@ -283,5 +291,6 @@ export default class ParallelCoord {
     this.data = newData;
     this.updateYearDisplay();
     this.drawLines();
+    this.drawSongList();
   }
 }
