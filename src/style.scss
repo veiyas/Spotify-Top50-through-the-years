@@ -144,20 +144,21 @@ svg {
   overflow: visible;
 }
 
-table {
-  height: 100%;
-  display: inline-block;
-  overflow: auto;
-}
-thead {
-  border-bottom: 1px solid $mid-gray;
-}
-tbody {
+.table-container {
+  flex: 1 0 0;
   overflow-y: scroll;
 }
+
+table {
+  overflow: auto;
+  table-layout: fixed;
+}
+// thead {
+//   border-bottom: 1px solid $mid-gray;
+// }
 th {
   @extend .small-caps;
-  // position: absolute;
+  // TODO This?
   // https://stackoverflow.com/questions/14834198/table-scroll-with-html-and-css
   padding: 0 0 0.5rem 0;
   text-align: left;
@@ -170,11 +171,16 @@ td {
   padding-right: 2rem;
   font-size: 0.9rem;
   padding-top: 0.6rem;
-
-  // max-width: 15rem;
-  // overflow: hidden;
-  // text-overflow: ellipsis;
-  // white-space: nowrap;
+  // Limit to one line per row
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  &:first-child {
+    max-width: 15rem;
+  }
+  &:nth-child(2) {
+    max-width: 9rem;
+  }
 }
 
 .legend {
@@ -267,8 +273,11 @@ td {
 }
 
 #list-container {
+  height: 100%;
   flex-basis: 100%;
   flex: 0 0 25rem;
+  display: flex;
+  flex-direction: column;
 }
 /* #endregion */
 

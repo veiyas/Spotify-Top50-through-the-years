@@ -30,13 +30,13 @@
       <div id="radar-container" class="column right shadow-box">
         <div id="song-info-data-container">
           <h2 id="song-title">Please select a song :)</h2>
-          <p id="song-artist">Very good artist</p>
+          <p id="song-artist">&nbsp;</p>
           <p class="small-caps">Duration</p>
-          <p id="song-duration">Minuuuter</p>
+          <p id="song-duration">&mdash;</p>
           <p class="small-caps">Tempo</p>
-          <p id="song-tempo">Some bpm</p>
+          <p id="song-tempo">&mdash;</p>
           <p class="small-caps">Year</p>
-          <p id="song-year">0000</p>
+          <p id="song-year">&mdash;</p>
         </div>
         <div id="radar-plot"></div>
       </div>
@@ -76,15 +76,17 @@
 
           <div id="list-container">
             <h2>Songs in selection</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Artist</th>
-                </tr>
-              </thead>
-              <tbody id="song-list-body"></tbody>
-            </table>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Artist</th>
+                  </tr>
+                </thead>
+                <tbody id="song-list-body"></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
