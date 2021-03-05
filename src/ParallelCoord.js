@@ -40,7 +40,6 @@ export default class ParallelCoord {
     this.width = containerWidth - this.margin.left - this.margin.right;
     /** Height excluding margins */
     this.height = containerHeight - this.margin.top - this.margin.bottom;
-    // TODO Something is a bit off with the margins somewhere -- fix it!
 
     // Put plot svg to this.div
     this.div.innerHTML = '';
@@ -136,37 +135,20 @@ export default class ParallelCoord {
     // Axis reordering stuff
     this.draggedAxes = new Map();
 
-    this.draw();
-  }
-
-  draw() {
-    this.updateScales();
     this.drawLines();
     this.drawAxes();
-  }
-
-  /** Updates scales to fit the current data */
-  updateScales() {
-    for (const dim of this.dimensions) {
-      this.yScales[dim].domain(
-        // Show full [0,100] for applicable parameters
-        hundredRange.has(dim) ? [0, 100] : extent(this.data, (d) => +d[dim])
-      );
-      // this.yScales[dim].domain(extent(this.data, (d) => +d[dim]));
-    }
   }
 
   drawAxes() {
     const axesSelection = this.plotAxesGroup
       .selectAll('.dimension')
-      .data(this.dimensions);
-
-    // Handle new axes
-    const newAxes = axesSelection
+      .data(this.dimensions)
       .enter()
       .append('g')
       .attr('class', 'dimension');
-    newAxes
+
+    // Add axis labels
+    axesSelection
       .append('text')
       .style('text-anchor', 'middle')
       .attr('y', -15)
@@ -178,7 +160,9 @@ export default class ParallelCoord {
       .on('mouseout', function (event, d) {
         select(this).text(`${paramFullNames.get(d)}`);
       });
-    newAxes.call(
+
+    // Add axis reordering functionality
+    axesSelection.call(
       // Inspired by https://bl.ocks.org/jasondavies/1341281
       drag()
         .filter(({ target }) => target.classList.contains('axis-label'))
@@ -190,28 +174,29 @@ export default class ParallelCoord {
           this.allLinesSelection.attr('d', this.pathGen);
           this.dimensions.sort((a, b) => this.xPosition(a) - this.xPosition(b));
           this.xScale.domain(this.dimensions);
-          newAxes.attr('transform', (d) => `translate(${this.xPosition(d)})`);
+          axesSelection.attr(
+            'transform',
+            (d) => `translate(${this.xPosition(d)})`
+          );
         })
         .on('end', (event, d) => {
           this.draggedAxes.delete(d);
-          newAxes
-            .merge(axesSelection)
+          axesSelection
             .transition()
             .attr('transform', (d) => `translate(${this.xPosition(d)})`);
           this.allLinesSelection.transition().attr('d', this.pathGen);
         })
     );
-    if (!this.brushesSelection) {
-      this.brushesSelection = newAxes.append('g').call(this.brush);
-    }
 
-    // Handle both new and old axes
-    newAxes
-      .merge(axesSelection)
+    // Add axes
+    axesSelection
       .attr('transform', (d) => `translate(${this.xScale(d)})`)
       .each((d, i, nodes) => {
         select(nodes[i]).transition().call(this.axes.get(d));
       });
+
+    // Add brush to axes
+    this.brushesSelection = axesSelection.append('g').call(this.brush);
   }
 
   drawLines() {
@@ -220,7 +205,7 @@ export default class ParallelCoord {
     this.allLinesSelection = lines.enter().append('path').merge(lines);
 
     this.allLinesSelection
-      .transition() // Not sure if this is the transition is just confusing
+      // .transition() // Not sure if this is the transition is just confusing
       .attr('d', this.pathGen)
       .attr('class', 'line')
       .style('stroke', (d) => (d['cluster'] === 0 ? '#FF5100' : undefined));
@@ -256,9 +241,12 @@ export default class ParallelCoord {
     return draggedPos ? draggedPos : this.xScale(d);
   }
 
-  /** Data should have the same dimensions as the initial data */
+  /** Data should have the same dimensions as the initial data.
+   *  To make comparisons easier the axes are not updated, thus new
+   *  data must have the same or smaller extent than the initial data
+   */
   setData(newData) {
     this.data = newData;
-    this.draw();
+    this.drawLines();
   }
 }
