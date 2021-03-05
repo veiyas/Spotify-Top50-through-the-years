@@ -1,0 +1,24 @@
+Introduktionsmanus till uppgiften:
+"Du kommer få använda en sida som visualiserar information of Spotify's topp 50 låtar åren 2010-2011. Du ska lösa
+några uppgifter vi har hittat på för att testa hur användbar hemsidan är. Vi kommer inte hjälpa med att lösa 
+uppgiften men vi kan förklara vad de olika visualiseringarna betyder.
+
+Det finns lite information som du behöver veta innan testet. Spotify ger olika värden till varje, dessa värden är 
+bland annat energy, tempo, danceability, liveness, acousticness. Varje låt har ett värde för alla dessa parametrar 
+och utger själva basen för hemsidan då visualiseringen bygger på dessa.
+
+Uppgifterna är dessa:
+	- Vilket år hade topplåtarna mest energi?
+	- Finns det något mönster för de flesta topplåtar? Om ja, vad är mönstret?
+
+Vi kommer ta tid för hur lång tid det tar att lösa uppgiften men det är inte i syfte att stressa, vi behöver bara
+all data vi kan för att utvärdera hemsidan."
+
+
+Instruktioner till tentavakter B)
+Uppgifter för testaren att lösa:
+	- Vilket år hade topplåtarna mest energi?
+	- Finns det något mönster för de flesta topplåtar? Om ja, vad är mönstret?
+
+Nämn inget om att det går att klicka på en låt för att få upp en radarplot, det vore intressant att se om de 
+listar ut de själv.
