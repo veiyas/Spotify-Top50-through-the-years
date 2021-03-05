@@ -171,6 +171,7 @@ td {
   padding-right: 2rem;
   font-size: 0.9rem;
   padding-top: 0.6rem;
+  padding-bottom: 0.15rem;
   // Limit to one line per row
   overflow: hidden;
   text-overflow: ellipsis;
@@ -311,12 +312,12 @@ td {
 #radar-plot {
   height: 100%;
   flex-basis: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   text {
     fill: $primary-color;
     stroke-width: 0;
-  }
-  .axis-label {
-    font-size: 0.75rem;
   }
   .shape {
     fill: rgba($accent, 0.3);

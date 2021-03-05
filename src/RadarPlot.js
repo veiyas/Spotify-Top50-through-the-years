@@ -94,7 +94,7 @@ export default class RadarPlot {
       const ft_name = paramFullNamesCompact.get(songFeatures[i]);
       const angle = Math.PI / 2 + (2 * Math.PI * i) / songFeatures.length;
       const line_coordinate = this.angleToCoordinate(angle, 100);
-      const label_coordinate = this.angleToCoordinate(angle, 130);
+      const label_coordinate = this.angleToLabelCoordinate(angle, 115);
 
       // Draw axis line
       this.svg
@@ -174,6 +174,14 @@ export default class RadarPlot {
     const x = Math.cos(angle) * this.radialScale(value);
     const y = Math.sin(angle) * this.radialScale(value);
     return { x: this.width / 2 + x, y: this.height / 2 - y };
+  }
+
+  angleToLabelCoordinate(angle, value) {
+    console.log(angle);
+    return this.angleToCoordinate(
+      angle,
+      value + Math.abs(18 * Math.cos(angle))
+    );
   }
 
   setData(newSong) {
