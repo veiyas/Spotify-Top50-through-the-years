@@ -95,8 +95,8 @@ export default class ParallelCoord {
       );
 
     // Brush
-    // TODO Selection seems to not work when the axes are in the way
-    const selections = new Map();
+    this.selections = new Map();
+    const outerThis = this; // For access to this in callback where this is rebound
     this.brush = brushY()
       .extent([
         [-(BRUSH_WIDTH / 2), 0],
@@ -104,30 +104,22 @@ export default class ParallelCoord {
       ])
       .on('start brush end', ({ selection, sourceEvent }, key) => {
         // Inspired by https://observablehq.com/@d3/brushable-parallel-coordinates?collection=@d3/d3-brush
-        // TODO Understand and make it work hehe
-        if (selection === null) selections.delete(key);
-        else selections.set(key, selection.map(this.yScales[key].invert));
-        // ...
-        const selected = [];
-        // ...
+        if (selection === null) this.selections.delete(key);
+        else this.selections.set(key, selection.map(this.yScales[key].invert));
+
         this.allLinesSelection.each(function (d) {
-          const lineIsActive = Array.from(selections).every(
-            ([key, [max, min]]) => d[key] >= min && d[key] <= max
-          );
+          const lineIsActive = outerThis.isInBrushRange(d);
           select(this)
             .classed('inactive', !lineIsActive)
             .classed('active', lineIsActive);
           if (lineIsActive) {
             select(this).raise();
-            selected.push(d);
           }
         });
-        // TODO Figure out what this does and if it is needed
-        // this.svg.property('value', selected).dispatch('input');
       });
     // Clear brushes from button
     select('#clear-pc').on('click', (event, d) => {
-      selections.clear(); // Clear filters
+      this.selections.clear(); // Clear filters
       this.brushesSelection.call(this.brush.move, null); // Reset brushes
       this.draw(); // Redraw with no filter
     });
@@ -208,6 +200,8 @@ export default class ParallelCoord {
       // .transition() // Not sure if this is the transition is just confusing
       .attr('d', this.pathGen)
       .attr('class', 'line')
+      .classed('inactive', (d) => !this.isInBrushRange(d))
+      .classed('active', (d) => this.isInBrushRange(d))
       .style('stroke', (d) => (d['cluster'] === 0 ? '#FF5100' : undefined));
 
     this.allLinesSelection
@@ -233,6 +227,12 @@ export default class ParallelCoord {
         this.radarPlotExists = true;
       }
     });
+  }
+
+  isInBrushRange(d) {
+    return Array.from(this.selections).every(
+      ([key, [max, min]]) => d[key] >= min && d[key] <= max
+    );
   }
 
   /** Returns the xPosition taking dragging into account */
