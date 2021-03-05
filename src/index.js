@@ -35,10 +35,8 @@ const propsToUsePC = new Set([
   'dur',
   'acous',
   'spch',
-  // 'pop',
 ]);
 
-// TODO I tried changing this and absolutely nothing happened
 const propsToUseTL = new Set([
   'bpm',
   'nrgy',
@@ -47,5 +45,5 @@ const propsToUseTL = new Set([
   'val',
   'acous',
   'spch',
-  'pop',
+  'dur',
 ]);

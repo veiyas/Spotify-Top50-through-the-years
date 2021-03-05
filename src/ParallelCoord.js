@@ -35,7 +35,7 @@ export default class ParallelCoord {
     // Calculate width, height, etc.
     const containerWidth = this.div.clientWidth;
     const containerHeight = this.div.clientHeight;
-    this.margin = { top: 31, right: 25, bottom: 10, left: 25 };
+    this.margin = { top: 31, right: 60, bottom: 10, left: 40 };
     /** Width excluding margins */
     this.width = containerWidth - this.margin.left - this.margin.right;
     /** Height excluding margins */
@@ -79,10 +79,7 @@ export default class ParallelCoord {
         .nice();
     }
 
-    this.xScale = scalePoint()
-      .range([0, this.width])
-      .padding(0.2)
-      .domain(this.dimensions);
+    this.xScale = scalePoint().range([0, this.width]).domain(this.dimensions);
 
     this.axes = new Map(
       // Reduce the number of ticks on the scale to reduce clutter
