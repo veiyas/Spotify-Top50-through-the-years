@@ -8,15 +8,7 @@ export default class RadarPlot {
   constructor(song) {
     this.song = song;
     this.div = document.getElementById('radar-plot');
-    this.propsToUse = new Set([
-      'nrgy',
-      'dnce',
-      'live',
-      'val',
-      'acous',
-      'spch',
-      'pop',
-    ]);
+    this.propsToUse = new Set(['nrgy', 'dnce', 'live', 'val', 'acous', 'spch']);
 
     // Calculate width, height, etc.
     const containerWidth = Math.min(

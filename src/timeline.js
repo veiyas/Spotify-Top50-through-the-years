@@ -10,6 +10,8 @@ import {
   scaleOrdinal,
   schemeCategory10,
   brushX,
+  rollup,
+  mean,
 } from 'd3';
 import { paramFullNames } from './paramInfo';
 
@@ -50,25 +52,37 @@ export default class Timeline {
   draw() {
     var parseYear = timeParse('%Y');
 
-    // What is this hhaah
-    // prettier-ignore
-    var sumData = [
-        {id: "bpm", values: [{date: parseYear("2010"), score:6225 },{date:parseYear("2011"), score: 6311},{date:parseYear("2012"), score: 4238},{date:parseYear("2013"), score: 8639},{date:parseYear("2014"), score: 7134},{date:parseYear("2015"), score: 11378},{date:parseYear("2016"), score: 9146},{date:parseYear("2017"), score: 7592},{date:parseYear("2018"), score:7334},{date:parseYear("2019"), score:3486}]},
-        {id: "nrgy", values: [{date: parseYear("2010"), score:3973 },{date:parseYear("2011"), score: 3969},{date:parseYear("2012"), score: 2642},{date:parseYear("2013"), score:5245},{date:parseYear("2014"), score:3931},{date:parseYear("2015"), score:6682},{date:parseYear("2016"), score: 5379},{date:parseYear("2017"), score: 4496},{date:parseYear("2018"), score:4190},{date:parseYear("2019"), score:2007}]},
-        {id: "dnce", values: [{date: parseYear("2010"), score:3291 },{date:parseYear("2011"), score: 3373},{date:parseYear("2012"), score: 2300},{date:parseYear("2013"), score: 4405},{date:parseYear("2014"), score: 3627},{date:parseYear("2015"), score: 6048},{date:parseYear("2016"), score: 5066},{date:parseYear("2017"), score:4249},{date:parseYear("2018"), score:4301},{date:parseYear("2019"), score:2161}]}, 
-        {id: "live", values: [{date: parseYear("2010"), score:1080 },{date:parseYear("2011"), score: 1110},{date:parseYear("2012"), score:554},{date:parseYear("2013"), score: 1400},{date:parseYear("2014"), score:1003},{date:parseYear("2015"), score:1739},{date:parseYear("2016"), score: 1419},{date:parseYear("2017"), score:999},{date:parseYear("2018"), score:944},{date:parseYear("2019"), score:470}]},
-        {id: "val", values: [{date: parseYear("2010"), score:2907 },{date:parseYear("2011"), score: 2846},{date:parseYear("2012"), score: 2246},{date:parseYear("2013"), score:3776},{date:parseYear("2014"), score: 3021},{date:parseYear("2015"), score: 4990},{date:parseYear("2016"), score: 3612},{date:parseYear("2017"), score:3398},{date:parseYear("2018"), score:3121},{date:parseYear("2019"), score:1575}]},
-        {id: "acous", values: [{date: parseYear("2010"), score:593 },{date:parseYear("2011"), score: 707},{date:parseYear("2012"), score: 170},{date:parseYear("2013"), score: 733},{date:parseYear("2014"), score: 1018},{date:parseYear("2015"), score:1577 },{date:parseYear("2016"), score: 1270},{date:parseYear("2017"), score:1079},{date:parseYear("2018"), score:818},{date:parseYear("2019"), score:674}]},
-        {id: "spch", values: [{date: parseYear("2010"), score:453 },{date:parseYear("2011"), score: 512},{date:parseYear("2012"), score: 203},{date:parseYear("2013"), score: 590},{date:parseYear("2014"), score: 503},{date:parseYear("2015"), score: 670},{date:parseYear("2016"), score: 669},{date:parseYear("2017"), score:636},{date:parseYear("2018"), score:552},{date:parseYear("2019"), score:252}]},
-        {id: "pop", values: [{date: parseYear("2010"), score:4277 },{date:parseYear("2011"), score: 3279},{date:parseYear("2012"), score: 2372},{date:parseYear("2013"), score: 4543},{date:parseYear("2014"), score: 3637},{date:parseYear("2015"), score:6134},{date:parseYear("2016"), score: 5133},{date:parseYear("2017"), score:4486},{date:parseYear("2018"), score:4636},{date:parseYear("2019"), score:2615}]},
-      ];
+    const rawAvgData = rollup(
+      this.data,
+      (v) =>
+        new Map(
+          Array.from(this.propsToUse).map((key) => {
+            return [key, mean(v, (d) => d[key])];
+          })
+        ),
+      (v) => v.year
+    );
 
-    var avgData = sumData;
-    for (var i = 0; i < 7; i++) {
-      for (var j = 0; j < sumData[i].values.length; j++) {
-        avgData[i].values[j].score = sumData[i].values[j].score / 50;
+    // Reshape the data bcs I don't have time to rewrite everything
+    const tempMap = new Map(
+      Array.from(this.propsToUse).map((key) => [
+        key,
+        {
+          id: key,
+          values: [],
+        },
+      ])
+    );
+    for (const [date, attrMap] of rawAvgData) {
+      for (const [attr, val] of attrMap) {
+        const current = tempMap.get(attr);
+        current.values.push({
+          date: date,
+          score: val,
+        });
       }
     }
+    const avgData = Array.from(tempMap.values());
 
     const xScale = scaleTime()
       .range([0, this.width])
@@ -128,7 +142,7 @@ export default class Timeline {
     //Add line legend
     const legend = select('#timeline-legend')
       .selectAll('li')
-      .data(sumData)
+      .data(avgData)
       .enter()
       .append('li');
     legend
@@ -140,7 +154,7 @@ export default class Timeline {
     //Brushing
     var brush = brushX()
       .extent([
-        [0, 20],
+        [0, 0],
         [this.width, this.height],
       ])
       .on('end', brushed);
