@@ -8,17 +8,36 @@ bland annat energy, tempo, danceability, liveness, acousticness. Varje låt har 
 och utger själva basen för hemsidan då visualiseringen bygger på dessa.
 
 Uppgifterna är dessa:
-	- Vilket år var låtarna mest respektive minst glada?
-	- Finns det något mönster för de flesta topplåtar? Om ja, vad är mönstret?
+
+Vilket år hade topplåtarna lägst respektive högst valens?
+	(Svar 2016 resp 2012)
+Vad är mönstret för de flesta topplåtar?
+	(Svar: Stort kluster runt samma energi, dansbarhet, tempo, längd, akustikhet)
+Finns det någon skillnad i mönstren första halvan av årtiondet jämfört med det andra? 
+	(Svar: Lägre tempo, energi, valens, mer akustiska låtar)
+Går det att identifiera utstickande låtar och filtrera bort allt utom dessa?
+	(Svar: Brusha över låtarna med acousticness > 70)
 
 Vi kommer ta tid för hur lång tid det tar att lösa uppgiften men det är inte i syfte att stressa, vi behöver bara
 all data vi kan för att utvärdera hemsidan."
 
 
-Instruktioner till tentavakter B)
-Uppgifter för testaren att lösa:
-	- Vilket år var låtarna mest respektive minst glada?
-	- Finns det något mönster för de flesta topplåtar? Om ja, vad är mönstret?
 
-Nämn inget om att det går att klicka på en låt för att få upp en radarplot, det vore intressant att se om de 
-listar ut de själv.
+Instruktioner till tentavakter B)
+
+Frågor om hemsidan, alla på en skala från 1 till 10 där 1 är jättesvårt/dåligt, 10 är jättelätt/bra:
+Generellt:
+	- Hur bra/dåligt är helhetsintrycket av hemsidan?
+	- Hur bra/dåligt är färgschemat av hemsidan?
+	- Hur lätt/svårt var det att lösa uppgifterna?
+Timeline:
+	- Hur lätt/svårt var det att förstå vad informationen i timelinen betydde?
+	- Hur lätt/svårt var det att filtrera information i timelinen?
+Parallellkoordinater:
+	- Hur lätt/svårt var det att förstå vad de parallella koordinaterna visualiserade?
+	- Hur lätt/svårt var det att filtrera information i de parallella koordinaterna?
+Radarplot:
+	- Hur lätt/svårt var det att förstå vad radarplotten visualiserade?
+	- Hur lätt/svårt var det att välja låtar att visas i radarplotten?
+
+
