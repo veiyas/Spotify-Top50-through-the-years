@@ -8,7 +8,7 @@ bland annat energy, tempo, danceability, liveness, acousticness. Varje låt har 
 och utger själva basen för hemsidan då visualiseringen bygger på dessa.
 
 Uppgifterna är dessa:
-	- Vilket år hade topplåtarna mest energi?
+	- Vilket år var låtarna mest respektive minst glada?
 	- Finns det något mönster för de flesta topplåtar? Om ja, vad är mönstret?
 
 Vi kommer ta tid för hur lång tid det tar att lösa uppgiften men det är inte i syfte att stressa, vi behöver bara
@@ -17,7 +17,7 @@ all data vi kan för att utvärdera hemsidan."
 
 Instruktioner till tentavakter B)
 Uppgifter för testaren att lösa:
-	- Vilket år hade topplåtarna mest energi?
+	- Vilket år var låtarna mest respektive minst glada?
 	- Finns det något mönster för de flesta topplåtar? Om ja, vad är mönstret?
 
 Nämn inget om att det går att klicka på en låt för att få upp en radarplot, det vore intressant att se om de 
