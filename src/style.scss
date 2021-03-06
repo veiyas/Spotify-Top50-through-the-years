@@ -164,6 +164,13 @@ th {
   text-align: left;
   padding-right: 2rem;
 }
+tr {
+  cursor: pointer;
+  &:hover {
+    font-weight: 800;
+    color: $accent;
+  }
+}
 // tr:nth-child(even) {
 //   background-color: lighten($lighter-background, 4%);
 // }
@@ -248,6 +255,7 @@ td {
     fill: none;
     stroke: $accent;
     opacity: 0.3;
+    cursor: pointer;
 
     &.inactive {
       visibility: hidden;

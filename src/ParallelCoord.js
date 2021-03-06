@@ -222,6 +222,7 @@ export default class ParallelCoord {
       // .transition() // Not sure if this is the transition is just confusing
       .attr('d', this.pathGen)
       .attr('class', 'line')
+      .attr('id', (d) => `pc-line-id-${d['']}`)
       .classed('inactive', (d) => !this.isInBrushRange(d))
       .classed('active', (d) => this.isInBrushRange(d))
       .style('stroke', (d) => (d['cluster'] === 0 ? '#FF5100' : undefined));
@@ -270,7 +271,24 @@ export default class ParallelCoord {
       .data(this.data)
       .join('tr')
       .html((d) => `<td>${d.title}</td><td>${d.artist}</td>`)
-      .style('display', (d) => (this.isInBrushRange(d) ? undefined : 'none'));
+      .style('display', (d) => (this.isInBrushRange(d) ? undefined : 'none'))
+      .attr('id', (d) => `list-id-${d['']}`)
+      .on('mouseover', function (event, d) {
+        const id = this.id.slice(8);
+        select(`#pc-line-id-${id}`).classed('hover', true).raise();
+      })
+      .on('mouseout', function (event, d) {
+        const id = this.id.slice(8);
+        select(`#pc-line-id-${id}`).classed('hover', false);
+      })
+      .on('click', (event, d) => {
+        if (this.radarPlotExists) {
+          this.radarPlot.setData(d);
+        } else {
+          this.radarPlot = new RadarPlot(d);
+          this.radarPlotExists = true;
+        }
+      });
   }
 
   isInBrushRange(d) {

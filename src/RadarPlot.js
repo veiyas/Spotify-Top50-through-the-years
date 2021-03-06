@@ -177,7 +177,6 @@ export default class RadarPlot {
   }
 
   angleToLabelCoordinate(angle, value) {
-    console.log(angle);
     return this.angleToCoordinate(
       angle,
       value + Math.abs(18 * Math.cos(angle))
