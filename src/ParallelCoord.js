@@ -108,7 +108,9 @@ export default class ParallelCoord {
           const lineIsActive = outerThis.isInBrushRange(d);
           select(this)
             .classed('inactive', !lineIsActive)
-            .classed('active', lineIsActive);
+            .classed('active', lineIsActive)
+            // Make sure hover state is removed if line gets hidden while hovered
+            .classed('hover', false);
           if (lineIsActive) {
             select(this).raise();
           }
