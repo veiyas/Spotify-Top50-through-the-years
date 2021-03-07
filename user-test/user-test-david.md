@@ -32,9 +32,9 @@
 	- 7, lätt när man fattade hur man skulle göra, svårt innan man visste att man kunde brusha
 ### Radarplot:
 - Hur lätt/svårt var det att förstå vad radarplotten visualiserade?
-	- NaN, kom aldrig till radarplotten
+	- NaN, kom aldrig till radarplotten, men fattade snabbt när den visades
 - Hur lätt/svårt var det att välja låtar att visas i radarplotten?
-	- NaN, kom aldrig till radarplotten
+	- NaN, kom aldrig till radarplotten, men lätt efter lite eftertanke på listan bredvid PK
 
 ### Öppna frågor:
 - Var det någon interaktion du tyckte var otydlig/svår att förstå?
