@@ -1,8 +1,8 @@
-import {min, max, extent} from 'd3';
+import {min, max, extent, filter} from 'd3';
 
 export default function mainDBSCAN(dataset) {
     var data = parseData(dataset);
-    const eps = 45;
+    const eps = 38;
     const minPts = 20;
     var label = []; //label datapoints to which cluster they belong. undefined = not visited, 0 = noise.
     var clusterIndex = 0; //Cluster counter. Cluster 0 is noise data points.
@@ -91,6 +91,9 @@ export default function mainDBSCAN(dataset) {
         for (let i = 0; i < label.length; i++) {
             Object.defineProperty(data[i], 'cluster', {value: label[i]});
         }
+
+        const nInCluster = data.filter(entry => entry['cluster'] == 1).length;
+        console.log("Songs in cluster: " + (nInCluster / data.length * 100).toFixed(0) + "%");
 
         return 'We did it boys, unclustered data is no more!';
     };
