@@ -13,8 +13,6 @@ Vilket år hade topplåtarna lägst respektive högst valens?
 	(Svar 2016 resp 2012)
 Vad är mönstret för de flesta topplåtar?
 	(Svar: Stort kluster runt samma energi, dansbarhet, tempo, längd, akustikhet)
-Finns det någon skillnad i mönstren första halvan av årtiondet jämfört med det andra? 
-	(Svar: Lägre tempo, energi, valens, mer akustiska låtar)
 Går det att identifiera utstickande låtar och filtrera bort allt utom dessa?
 	(Svar: Brusha över låtarna med acousticness > 70)
 Ta reda på vilken låt som har högst energy under år 2013 samt hur lång den låten är
@@ -35,10 +33,15 @@ Generellt:
 	- Hur väl framgick interaktionen mellan de olika visualiseringarna?
 Timeline:
 	- Hur lätt/svårt var det att förstå vad informationen i timelinen betydde?
-	- Hur lätt/svårt var det att filtrera information i timelinen?
+	- Hur lätt/svårt var det att använda timelinen för att filtrera informationen i Parallellkoordinaterna?
 Parallellkoordinater:
 	- Hur lätt/svårt var det att förstå vad de parallella koordinaterna visualiserade?
 	- Hur lätt/svårt var det att filtrera information i de parallella koordinaterna?
 Radarplot:
 	- Hur lätt/svårt var det att förstå vad radarplotten visualiserade?
 	- Hur lätt/svårt var det att välja låtar att visas i radarplotten?
+
+Öppna frågor:
+	- Var det någon interaktion du tyckte var otydlig/svår att förstå?
+	- Vad tror du det betyder att några låtar är rödmarkerade, dvs klassificerade som noise?
+		(Alltså förstår användaren att dessa representerar outliers)
