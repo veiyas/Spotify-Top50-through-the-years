@@ -17,8 +17,10 @@ Finns det någon skillnad i mönstren första halvan av årtiondet jämfört med
 	(Svar: Lägre tempo, energi, valens, mer akustiska låtar)
 Går det att identifiera utstickande låtar och filtrera bort allt utom dessa?
 	(Svar: Brusha över låtarna med acousticness > 70)
+Ta reda på vilken låt som har högst energy under år 2013 samt hur lång den låten är
+	(Svar: Pom Poms by Jonas Brothers, Duration= 3min 18sec)
 
-Vi kommer ta tid för hur lång tid det tar att lösa uppgiften men det är inte i syfte att stressa, vi behöver bara
+Vi kommer ta tid för hur lång tid det tar att lösa uppgifterna men det är inte i syfte att stressa, vi behöver bara
 all data vi kan för att utvärdera hemsidan."
 
 
