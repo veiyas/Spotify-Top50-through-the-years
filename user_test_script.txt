@@ -1,5 +1,5 @@
 Introduktionsmanus till uppgiften:
-"Du kommer få använda en sida som visualiserar information of Spotify's topp 50 låtar åren 2010-2011. Du ska lösa
+"Du kommer få använda en sida som visualiserar information om Spotifys topplåtar åren 2010-2019. Du ska lösa
 några uppgifter vi har hittat på för att testa hur användbar hemsidan är. Vi kommer inte hjälpa med att lösa 
 uppgiften men vi kan förklara vad de olika visualiseringarna betyder.
 
@@ -30,6 +30,7 @@ Generellt:
 	- Hur bra/dåligt är helhetsintrycket av hemsidan?
 	- Hur bra/dåligt är färgschemat av hemsidan?
 	- Hur lätt/svårt var det att lösa uppgifterna?
+	- Hur väl framgick interaktionen mellan de olika visualiseringarna?
 Timeline:
 	- Hur lätt/svårt var det att förstå vad informationen i timelinen betydde?
 	- Hur lätt/svårt var det att filtrera information i timelinen?
@@ -39,5 +40,3 @@ Parallellkoordinater:
 Radarplot:
 	- Hur lätt/svårt var det att förstå vad radarplotten visualiserade?
 	- Hur lätt/svårt var det att välja låtar att visas i radarplotten?
-
-
