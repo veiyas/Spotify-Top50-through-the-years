@@ -19,7 +19,7 @@
 - Hur lätt/svårt var det att lösa uppgifterna?
 	- 6
 - Hur väl framgick interaktionen mellan de olika visualiseringarna?
-	- 17
+	- 7
 ### Timeline:
 - Hur lätt/svårt var det att förstå vad informationen i timelinen betydde?
 	- 5
@@ -38,7 +38,7 @@
 
 ### Öppna frågor:
 - Var det någon interaktion du tyckte var otydlig/svår att förstå?
-	-Att man kan använda brushar. Vad y-skalan på timeline betyder. Skillnad på röd/grön. Röd kan uppfattas som att låtarna på nåt sätt är dåliga/sämre.
+	- Att man kan använda brushar. Vad y-skalan på timeline betyder. Skillnad på röd/grön. Röd kan uppfattas som att låtarna på nåt sätt är dåliga/sämre.
 - Vad tror du det betyder att några låtar är rödmarkerade, dvs klassificerade som noise?
 	- De sticker ut från trenden
   
