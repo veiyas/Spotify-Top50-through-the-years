@@ -45,3 +45,26 @@ Radarplot:
 	- Var det någon interaktion du tyckte var otydlig/svår att förstå?
 	- Vad tror du det betyder att några låtar är rödmarkerade, dvs klassificerade som noise?
 		(Alltså förstår användaren att dessa representerar outliers)
+
+
+
+\begin{table*}[]
+\begin{tabular}{llll}
+\label{tb:questionnaire}
+\caption{Questionnaire results.}
+\multicolumn{1}{l|}{\textbf{Questions}}                                         & User 1 & User 2 & User 3 \\ \hline
+\multicolumn{1}{l|}{How good/bad was the overall impression of the web app?}    & 10     & 8      & 8      \\
+\multicolumn{1}{l|}{How good/bad was the colour scheme of the web app?}         & 10     & 9      & 10     \\
+\multicolumn{1}{l|}{How easy/hard was it to complete the tasks?}                & 8      & 6      & 6      \\
+\multicolumn{1}{l|}{How well telegraphed were the interactions between the visualisations?} & 10 & 7 & 4 \\
+                                                                                &        &        &        \\
+How easy/hard was it to understand the information in the timeline?             & 7      & 5      & 10     \\
+How easy/hard was it to filter out data using the timeline brush?               & 8      & 5      & 8      \\
+                                                                                &        &        &        \\
+How easy/hard was it to understand the information in the parallel coordinates? & 10     & 9      & 9      \\
+How easy/hard was it to filter out data using the parallel coordinates brushes? & 7      & 5      & 5      \\
+                                                                                &        &        &        \\
+How easy/hard was it to understand the information in the radar plot?           & NaN    & 10     & 10     \\
+How easy/hard was it to select songs to visualise in the radar plot?            & NaN    & 10     & 10    
+\end{tabular}
+\end{table*}
